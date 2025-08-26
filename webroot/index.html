@@ -50,18 +50,29 @@
 		<!-- former button colour for 3 = #e6c660 -->
 
 
-		<!-- About Us & Quote -->
+		<!-- Next Event & About Us & Quote -->
 	</header>
-	<section id="about-us" style="padding-top: 80px;">
+	<section id="about-us" style="padding-top: 50px;">
 		<div class="container">
-			<blockquote class="quote-card">
 
+			<!-- Next Event Bar -->
+			<div id="next-event-bar" class="next-event-bar">
+				<span class="label">Next Event:</span>
+				<span id="next-event"></span>
+				<a id="btn-more-info" class="more-info-btn" href="#upcoming" data-bs-toggle="modal">More Info</a>
+			</div>
+			<script src="assets/js/nextevent.js" defer></script>
+
+			<!-- Quote Card -->
+			<blockquote class="quote-card">
 				<p>Not knowing anyone at the start of freshers was a really difficult time for me, so joining SVGE has been a
 					real great joy! The range of games and strong inclusivity within the society has helped me throughout the year
 					and has even introduced me some of the greatest friends I could ask for.</p>
 
 				<cite>Samuel Tingson - Former member of SVGE</cite>
 			</blockquote>
+
+			<!-- About Us -->
 			<div class="row" style="margin-top: 80px;">
 				<div class="col-lg-12 text-center">
 					<h2 class="text-uppercase section-heading">About Us</h2>
@@ -386,7 +397,7 @@
 
 
 
-						<div class="row row-striped">
+						<div class="row row-striped" data-date="2025-09-23">
 							<div class="col-2 text-center ">
 								<h1 class="display-4 "><span class="badge date-green">23</span></h1>
 								<h2>SEP</h2>
@@ -402,7 +413,7 @@
 							</div>
 						</div>
 
-						<div class="row row-striped">
+						<div class="row row-striped" data-date="2025-09-30">
 							<div class="col-2 text-center ">
 								<h1 class="display-4 "><span class="badge date-green">30</span></h1>
 								<h2>SEP</h2>
@@ -859,16 +870,7 @@
 				</div>
 			</div>
 		</div>
-		<script>
-			// Update button text on toggle
-			document.querySelectorAll('.toggle-description').forEach(button => {
-				button.addEventListener('click', function () {
-					this.textContent = this.getAttribute('aria-expanded') === 'true'
-						? 'Show Less'
-						: 'Read More';
-				});
-			});
-		</script>
+		<script src="assets/js/updatebutton.js" defer></script>
 	</div>
 
 

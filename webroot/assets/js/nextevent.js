@@ -5,7 +5,8 @@ window.addEventListener("DOMContentLoaded", () => {
     const parsedEvents = events.map(el => ({
         date: new Date(el.dataset.date),
         title: el.querySelector("h3")?.textContent || "Untitled Event",
-        location: el.querySelector(".fa-location-arrow")?.parentElement.textContent.trim() || "Location TBA"
+        location: el.querySelector(".fa-location-arrow")?.parentElement.textContent.trim() || "Location TBA",
+        time: el.querySelector(".fa-clock-o")?.parentElement.textContent.trim() || "Time TBA"
     }));
 
     const upcoming = parsedEvents.filter(e => e.date >= now);
@@ -20,13 +21,14 @@ window.addEventListener("DOMContentLoaded", () => {
         });
 
         nextEl.innerHTML = `
-					<div class="next-event-content">
-					<span><strong>${e.title}</strong></span>
-					<span>| ${formattedDate}</span>
-					<span>| ${e.location}</span>
-					</div>
-				`;
+        <div class="next-event-content">
+          <span><strong>${e.title}</strong></span>
+          <span>| ${formattedDate}</span>
+          <span>| ${e.time}</span>
+          <span>| ${e.location}</span>
+        </div>
+      `;
     } else {
-        nextEl.innerHTML = `<span>No upcoming events</span>`;
+        nextEl.innerHTML = `<span>No upcoming events ✨</span>`;
     }
 });

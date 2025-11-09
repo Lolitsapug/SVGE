@@ -109,7 +109,7 @@ def update_tournament(tournament_id):
         if tournament.get('id') == tournament_id:
             # Update tournament data
             updated_data = request.json
-            updated_data['id'] = tournament_id  # Ensure ID doesn't change
+            updated_data['id'] = tournament_id  
             tournaments[i] = updated_data
             save_tournaments(tournaments)
             return jsonify(updated_data)
@@ -188,4 +188,9 @@ if __name__ == '__main__':
     print("Tournaments: http://localhost:5000/tournaments.html")
     print("=" * 50)
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Use environment variables for production deployment
+    port = int(os.environ.get('PORT', 5000))
+    host = os.environ.get('HOST', '0.0.0.0')
+    debug = os.environ.get('DEBUG', 'False').lower() == 'true'
+    
+    app.run(debug=debug, host=host, port=port)

@@ -1,7 +1,8 @@
 // API Helper for Tournament System
 // Centralized API calls to Flask backend
 
-const API_BASE_URL = 'http://localhost:5000/api';
+// Automatically detect the API base URL
+const API_BASE_URL = window.location.origin + '/api';
 
 class TournamentAPI {
     /**

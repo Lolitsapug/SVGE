@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html data-bs-theme="light">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>Tournament - SVGE</title>
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+	<link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+	<link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+	<link rel="stylesheet" href="assets/css/styles.min.css?v2.2">
+	<link rel="stylesheet" href="assets/css/tournament.css">
+</head>
+
+<body id="page-top">
+	<!-- Navigation Bar -->
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar" style="background-color: #6E2B31; padding: 10px 0;">
+		<div class="container">
+			<a class="navbar-brand" href="index.html">
+				<img src="assets/img/SVGE_LOGO_NO_TEXT.svg" style="height: 40px; margin-right: 10px;">
+				SVGE
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="index.html">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="tournaments.html">Tournaments</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Tournament Header -->
+	<header class="tournament-header">
+		<div class="container text-center">
+			<h1 class="display-4 text-white mb-3" id="tournamentTitle">SVGE Mini Tournament</h1>
+			<div class="tournament-details mt-4">
+				<p class="tournament-description" id="tournamentDescription">
+					Join us for an exciting tournament! Battle it out with other teams to claim victory.
+				</p>
+				<p class="tournament-date-display">
+					<i class="fa fa-calendar"></i> <span id="tournamentDate">November 9 - November 9, 2025</span>
+				</p>
+			</div>
+		</div>
+	</header>
+
+	<!-- Tournament Info Section -->
+	<section class="tournament-info-section py-4 bg-light">
+		<div class="container text-center">
+			<h3>Tournament Bracket</h3>
+			<p class="text-muted">Click on team names to view captain information</p>
+		</div>
+	</section>
+
+	<!-- Tournament Controls (Hidden - view only) -->
+	<section class="tournament-controls" style="display: none;">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-md-4">
+					<label for="numTeams" class="form-label fw-bold">Number of Teams:</label>
+					<select id="numTeams" class="form-select" onchange="generateBracket()">
+						<option value="4">4 Teams</option>
+						<option value="8" selected>8 Teams</option>
+						<option value="16">16 Teams</option>
+					</select>
+				</div>
+				<div class="col-md-8 text-md-end mt-3 mt-md-0">
+					<button class="btn btn-primary" onclick="editMode()">
+						<i class="fa fa-edit"></i> Edit Teams
+					</button>
+					<button class="btn btn-success" onclick="saveData()">
+						<i class="fa fa-save"></i> Save Progress
+					</button>
+					<button class="btn btn-danger" onclick="resetBracket()">
+						<i class="fa fa-refresh"></i> Reset Bracket
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Tournament Bracket -->
+	<section class="tournament-bracket py-5" style="background-color: #F8F9FA;">
+		<div class="container-fluid">
+			<div id="bracketContainer" class="bracket-container">
+				<!-- Bracket will be generated here by JavaScript -->
+			</div>
+		</div>
+	</section>
+
+	<!-- Sponsors/Partners -->
+	<section class="py-5">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-md-3"><a href="#"><img class="img-fluid d-block mx-auto"
+							src="assets/img/clients/NSE_notext_LARGE.png" style="height: 75px;"></a></div>
+				<div class="col-sm-6 col-md-3"><a href="#"><img class="img-fluid d-block mx-auto"
+							src="assets/img/clients/1616173794304_NUEL_FULL_COLOUR_VERTICAL@800.png" style="height: 75px;"></a></div>
+				<div class="col-sm-6 col-md-3"><a href="#"><img class="img-fluid d-block mx-auto"
+							src="assets/img/clients/SUSU_University_of_Southampton_Students%27_Union_logo_2020.png"
+							style="height: 75px;"></a></div>
+				<div class="col-sm-6 col-md-3"><a href="#"><img class="img-fluid d-block mx-auto"
+							src="assets/img/clients/Southlander_profile_2.jpg" style="height: 75px;"></a></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4"><span class="copyright">Designed By Rudra Mutalik, David Deng</span></div>
+				<div class="col-md-4">
+					<ul class="list-inline social-buttons">
+						<li class="list-inline-item"><a href="https://twitter.com/UoSVGE"><i class="fa fa-twitter"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.facebook.com/groups/586562508157171/"><i
+									class="fa fa-facebook"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.instagram.com/uosvge/"><i class="fa fa-instagram"></i></a>
+						</li>
+						<li class="list-inline-item"><a href="https://www.twitch.tv/uosvge"><i class="fa fa-twitch"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.youtube.com/channel/UCiLgPdg1SmBA7mdVzq-FaWw"><i
+									class="fa fa-youtube"></i></a></li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<ul class="list-inline quicklinks">
+						<li class="list-inline-item"><a
+								href="https://drive.google.com/file/d/1Mal9B43T7udX_nkvOQ9RG4lmYUU2J4v3/view?usp=sharing">Constitution</a>
+						</li>
+						<li class="list-inline-item"><a
+								href="https://drive.google.com/file/d/1-aBfNCNPlMcLBzbeBUTP5WEzGjLOGrnX/view?usp=sharing">Sportsmanship
+								and Conduct Policy</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<!-- Edit Team Modal -->
+	<div class="modal fade" id="editTeamModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Edit Team</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="teamName" class="form-label">Team Name</label>
+						<input type="text" class="form-control" id="teamName" placeholder="Enter team name">
+					</div>
+					<div class="mb-3">
+						<label for="captainDiscord" class="form-label">Captain's Discord Tag</label>
+						<input type="text" class="form-control" id="captainDiscord" placeholder="username#1234">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" onclick="saveTeamEdit()">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Team Info Modal -->
+	<div class="modal fade" id="teamInfoModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="teamInfoTitle">Team Information</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<div class="team-info-display">
+						<p><strong>Captain's Discord:</strong></p>
+						<p class="discord-tag" id="teamInfoDiscord">Not set</p>
+						<p class="mt-3"><strong>Captain's Game ID:</strong></p>
+						<p class="game-id" id="teamInfoGameId">Not set</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/js/api-helper.js"></script>
+	<script src="assets/js/tournament-view.js"></script>
+	<script>
+		// Hide/show navbar on scroll
+		let lastScrollTop = 0;
+		const navbar = document.getElementById('mainNavbar');
+		
+		window.addEventListener('scroll', function() {
+			let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+			
+			if (scrollTop > lastScrollTop && scrollTop > 100) {
+				// Scrolling down
+				navbar.classList.add('navbar-hidden');
+			} else {
+				// Scrolling up
+				navbar.classList.remove('navbar-hidden');
+			}
+			
+			lastScrollTop = scrollTop;
+		});
+	</script>
+</body>
+
+</html>

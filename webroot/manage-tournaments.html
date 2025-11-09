@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>Manage Tournaments - SVGE Admin</title>
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="icon" href="assets/img/SVGE_LOGO_NO_TEXT.svg">
+	<style>
+		:root {
+			--svge-primary: #6e2b31;
+			--svge-dark: #4a1f24;
+			--svge-accent: #8a363d;
+		}
+
+		body {
+			background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+			min-height: 100vh;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+
+		.navbar {
+			background: rgba(110, 43, 49, 0.95) !important;
+			backdrop-filter: blur(10px);
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+		}
+
+		.admin-header {
+			background: linear-gradient(135deg, var(--svge-primary), var(--svge-dark));
+			color: white;
+			padding: 60px 0 40px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+			margin-bottom: 40px;
+		}
+
+		.tournament-list {
+			padding: 40px 0;
+		}
+
+		.tournament-item {
+			background: white;
+			border-radius: 12px;
+			padding: 20px;
+			margin-bottom: 20px;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+		}
+
+		.tournament-item:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+		}
+
+		.tournament-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
+		}
+
+		.tournament-title-section h4 {
+			margin: 0;
+			color: var(--svge-primary);
+		}
+
+		.tournament-meta {
+			display: flex;
+			gap: 15px;
+			flex-wrap: wrap;
+			color: #666;
+			font-size: 0.9rem;
+		}
+
+		.tournament-actions {
+			display: flex;
+			gap: 10px;
+		}
+
+		.btn-admin {
+			background: var(--svge-primary);
+			color: white;
+			border: none;
+			padding: 8px 20px;
+			border-radius: 6px;
+			transition: all 0.3s ease;
+		}
+
+		.btn-admin:hover {
+			background: var(--svge-dark);
+			color: white;
+			transform: translateY(-2px);
+		}
+
+		.btn-create {
+			background: #28a745;
+			color: white;
+			border: none;
+			padding: 12px 30px;
+			border-radius: 8px;
+			font-size: 1.1rem;
+			transition: all 0.3s ease;
+		}
+
+		.btn-create:hover {
+			background: #218838;
+			transform: translateY(-2px);
+		}
+
+		.badge {
+			padding: 6px 12px;
+			border-radius: 6px;
+			font-size: 0.85rem;
+		}
+
+		.status-ongoing {
+			background: #28a745;
+			color: white;
+		}
+
+		.status-upcoming {
+			background: #007bff;
+			color: white;
+		}
+
+		.status-completed {
+			background: #6c757d;
+			color: white;
+		}
+
+		.empty-state {
+			text-align: center;
+			padding: 60px 20px;
+			color: white;
+		}
+
+		.empty-state i {
+			font-size: 4rem;
+			margin-bottom: 20px;
+			opacity: 0.5;
+		}
+
+		footer {
+			background: rgba(110, 43, 49, 0.95);
+			color: white;
+			padding: 20px 0;
+			text-align: center;
+			margin-top: 60px;
+		}
+
+		.create-tournament-section {
+			background: white;
+			border-radius: 12px;
+			padding: 30px;
+			margin-bottom: 40px;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		}
+
+		.create-tournament-section h3 {
+			color: var(--svge-primary);
+			margin-bottom: 20px;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+		<div class="container-fluid">
+			<a class="navbar-brand d-flex align-items-center" href="index.html">
+				<img src="assets/img/SVGE_LOGO_NO_TEXT.svg" style="height: 40px; margin-right: 10px;">
+				SVGE Admin
+			</a>
+			<div class="ms-auto">
+				<a href="tournaments.html" class="btn btn-sm btn-outline-light me-2">
+					<i class="fa fa-eye"></i> View Public
+				</a>
+				<button class="btn btn-sm btn-danger" onclick="logout()">
+					<i class="fa fa-sign-out"></i> Logout
+				</button>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Admin Header -->
+	<header class="admin-header">
+		<div class="container">
+			<h1 class="display-5">All Tournaments</h1>
+			<p class="lead">Create and manage all tournaments</p>
+		</div>
+	</header>
+
+	<!-- Create New Tournament -->
+	<section class="tournament-list">
+		<div class="container">
+			<div class="create-tournament-section">
+				<h3><i class="fa fa-plus-circle"></i> Create New Tournament</h3>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="mb-3">
+							<label for="newTournamentId" class="form-label fw-bold">Tournament ID</label>
+							<input type="text" class="form-control" id="newTournamentId" placeholder="e.g. valorant-spring-2025">
+							<small class="text-muted">Use lowercase letters, numbers, and hyphens only</small>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3">
+							<label for="newTournamentTitle" class="form-label fw-bold">Tournament Title</label>
+							<input type="text" class="form-control" id="newTournamentTitle" placeholder="e.g. Valorant Spring Tournament">
+						</div>
+					</div>
+					<div class="col-12">
+						<button class="btn btn-create" onclick="createTournament()">
+							<i class="fa fa-plus"></i> Create Tournament
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Tournament List -->
+			<div id="tournamentList">
+				<!-- Tournaments will be loaded here -->
+			</div>
+
+			<!-- Empty State -->
+			<div id="emptyState" class="empty-state" style="display: none;">
+				<i class="fa fa-trophy"></i>
+				<h3>No Tournaments Yet</h3>
+				<p>Create your first tournament to get started!</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<p class="mb-0">&copy; 2025 SVGE Esports Society. All rights reserved.</p>
+		</div>
+	</footer>
+
+	<!-- Bootstrap JS -->
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/js/api-helper.js"></script>
+	<script>
+		// Check authentication
+		function checkAuth() {
+			const adminAuth = sessionStorage.getItem('adminAuth');
+			const authTime = sessionStorage.getItem('authTime');
+			
+			if (!adminAuth || adminAuth !== 'authenticated') {
+				window.location.href = 'admin-login.html';
+				return;
+			}
+			
+			// Check if session expired (2 hours)
+			if (authTime) {
+				const elapsed = Date.now() - parseInt(authTime);
+				const twoHours = 2 * 60 * 60 * 1000;
+				if (elapsed > twoHours) {
+					sessionStorage.removeItem('adminAuth');
+					sessionStorage.removeItem('authTime');
+					window.location.href = 'admin-login.html';
+					return;
+				}
+			}
+		}
+
+		// Logout
+		function logout() {
+			sessionStorage.removeItem('adminAuth');
+			sessionStorage.removeItem('authTime');
+			window.location.href = 'admin-login.html';
+		}
+
+		// Load all tournaments
+		async function loadTournaments() {
+			const tournamentList = document.getElementById('tournamentList');
+			const emptyState = document.getElementById('emptyState');
+			
+			try {
+				const tournaments = await TournamentAPI.getAllTournaments();
+				
+				if (tournaments.length === 0) {
+					tournamentList.innerHTML = '';
+					emptyState.style.display = 'block';
+					return;
+				}
+				
+				emptyState.style.display = 'none';
+				tournamentList.innerHTML = '';
+				
+				tournaments.forEach(tournament => {
+					const item = createTournamentItem(tournament);
+					tournamentList.appendChild(item);
+				});
+			} catch (e) {
+				console.error('Error loading tournaments:', e);
+				tournamentList.innerHTML = '<div class="alert alert-danger">Error loading tournaments. Please make sure the server is running.</div>';
+			}
+		}
+
+		// Create tournament item
+		function createTournamentItem(tournament) {
+			const div = document.createElement('div');
+			div.className = 'tournament-item';
+			
+			const statusClass = `status-${tournament.status || 'ongoing'}`;
+			const statusText = (tournament.status || 'ongoing').charAt(0).toUpperCase() + (tournament.status || 'ongoing').slice(1);
+			
+			div.innerHTML = `
+				<div class="tournament-header">
+					<div class="tournament-title-section">
+						<h4>${tournament.title || 'Untitled Tournament'}</h4>
+						<div class="tournament-meta">
+							<span><i class="fa fa-id-badge"></i> ${tournament.id}</span>
+							<span><i class="fa fa-calendar"></i> ${tournament.date || 'TBA'}</span>
+							<span class="badge ${statusClass}">${statusText}</span>
+						</div>
+					</div>
+					<div class="tournament-actions">
+						<a href="tournament-admin.html?id=${tournament.id}" class="btn btn-admin">
+							<i class="fa fa-edit"></i> Edit
+						</a>
+						<a href="tournament.html?id=${tournament.id}" class="btn btn-outline-primary" target="_blank">
+							<i class="fa fa-eye"></i> View
+						</a>
+						<button class="btn btn-outline-danger" onclick="deleteTournament('${tournament.id}')">
+							<i class="fa fa-trash"></i>
+						</button>
+					</div>
+				</div>
+			`;
+			
+			return div;
+		}
+
+		// Create new tournament
+		async function createTournament() {
+			const id = document.getElementById('newTournamentId').value.trim();
+			const title = document.getElementById('newTournamentTitle').value.trim();
+			
+			if (!id || !title) {
+				alert('Please enter both Tournament ID and Title');
+				return;
+			}
+			
+			// Validate ID format
+			if (!/^[a-z0-9-]+$/.test(id)) {
+				alert('Tournament ID can only contain lowercase letters, numbers, and hyphens');
+				return;
+			}
+			
+			// Check if ID already exists
+			try {
+				const existing = await TournamentAPI.getTournament(id);
+				if (existing) {
+					alert('A tournament with this ID already exists');
+					return;
+				}
+			} catch (e) {
+				console.log('Tournament does not exist, proceeding with creation');
+			}
+			
+			// Redirect to admin page with new tournament ID
+			window.location.href = `tournament-admin.html?id=${id}`;
+		}
+
+		// Delete tournament
+		async function deleteTournament(id) {
+			if (!confirm(`Are you sure you want to delete tournament "${id}"? This action cannot be undone.`)) {
+				return;
+			}
+			
+			try {
+				await TournamentAPI.deleteTournament(id);
+				// Reload list
+				await loadTournaments();
+			} catch (e) {
+				console.error('Error deleting tournament:', e);
+				alert('Error deleting tournament: ' + e.message);
+			}
+		}
+
+		// Initialize
+		document.addEventListener('DOMContentLoaded', async function() {
+			checkAuth();
+			
+			// Initialize example tournament if needed
+			try {
+				await TournamentAPI.initExampleTournament();
+			} catch (e) {
+				console.log('Example tournament initialization:', e);
+			}
+			
+			await loadTournaments();
+		});
+	</script>
+</body>
+
+</html>

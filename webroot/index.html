@@ -11,12 +11,36 @@
 	<link rel="stylesheet" href="assets/fonts/ionicons.min.css">
 	<link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
 	<link rel="stylesheet" href="assets/css/styles.min.css?v2.2">
+	<link rel="stylesheet" href="assets/css/tournament.css">
 </head>
 
 <!-- ( Shift + Alt + F ) to unminify/format styles.min.css-->
 
 
 <body id="page-top" data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="54">
+	<!-- Navigation Bar -->
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar" style="background-color: rgba(110, 43, 49, 0.85); padding: 10px 0; backdrop-filter: blur(10px);">
+		<div class="container">
+			<a class="navbar-brand" href="index.html">
+				<img src="assets/img/SVGE_LOGO_NO_TEXT.svg" style="height: 40px; margin-right: 10px;">
+				SVGE
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item">
+						<a class="nav-link active" href="index.html">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="tournaments.html">Tournaments</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
 	<header class="masthead" style="background: url(&quot;assets/img/DSC03715.jpg&quot;);background-position: center;">
 		<div class="container">
 			<div class="intro-text">
@@ -349,10 +373,12 @@
 			</div>
 		</div>
 	</section>
+	
+	<!-- Footer -->
 	<footer>
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4"><span class="copyright">Designed By Rudra Mutalik</span></div>
+				<div class="col-md-4"><span class="copyright">Designed By Rudra Mutalik, David Deng</span></div>
 				<div class="col-md-4">
 					<ul class="list-inline social-buttons">
 						<li class="list-inline-item"><a href="https://twitter.com/UoSVGE"><i class="fa fa-twitter"></i></a></li>
@@ -425,6 +451,41 @@
 									and find out how you can get involved with our events, teams and socials! No experience or equipment
 									needed.<br><a href="https://www.susu.org/event/24862/give-it-a-go-video-games-esports-taster-session"
 										class="text-decoration-none" style="color: #7289da;">Find out more!</a></p>
+							</div>
+						</div>
+
+						<div class="row row-striped" data-date="2025-10-15">
+							<div class="col-2 text-center ">
+								<h1 class="display-4 "><span class="badge date-green">15</span></h1>
+								<h2>OCT</h2>
+							</div>
+							<div class="col-10">
+								<h3 class="text-uppercase"><strong>Hobbit Social</strong></h3>
+								<ul class="list-inline">
+									<li class="list-inline-item"><i class="fa fa-calendar-o" aria-hidden="true"></i> Wednesday 15th Oct</li>
+									<li class="list-inline-item"><i class="fa fa-clock-o" aria-hidden="true"></i> 6:30 PM - 10:00 PM</li>
+									<li class="list-inline-item"><i class="fa fa-location-arrow" aria-hidden="true"></i> The Hobbit Pub</li>
+								</ul>
+								<p style="color:black"> Our first society wide hobbit social of the year! Come to meet others and have fun 
+									with friends. Come before 8pm to skip the £2.50 entry fee.  Hope to see you there! bring id
+								</p>
+							</div>
+						</div>
+
+						<div class="row row-striped" data-date="2025-11-09">
+							<div class="col-2 text-center ">
+								<h1 class="display-4 "><span class="badge date-green">30</span></h1>
+								<h2>NOV</h2>
+							</div>
+							<div class="col-10">
+								<h3 class="text-uppercase"><strong>League Of Legends Worlds Finals Watch Party</strong></h3>
+								<ul class="list-inline">
+									<li class="list-inline-item"><i class="fa fa-calendar-o" aria-hidden="true"></i> Sunday 9th Nov</li>
+									<li class="list-inline-item"><i class="fa fa-clock-o" aria-hidden="true"></i> 8:00 AM - 1:00 PM</li>
+									<li class="list-inline-item"><i class="fa fa-location-arrow" aria-hidden="true"></i> 58/1023</li>
+								</ul>
+								<p style="color:black">details tbc.
+								</p>
 							</div>
 						</div>
 
@@ -1109,6 +1170,26 @@
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
 	<script src="assets/js/script.min.js"></script>
+	<script src="assets/js/common.js"></script>
+	<script>
+		// Hide/show navbar on scroll
+		let lastScrollTop = 0;
+		const navbar = document.getElementById('mainNavbar');
+		
+		window.addEventListener('scroll', function() {
+			let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+			
+			if (scrollTop > lastScrollTop && scrollTop > 100) {
+				// Scrolling down
+				navbar.classList.add('navbar-hidden');
+			} else {
+				// Scrolling up
+				navbar.classList.remove('navbar-hidden');
+			}
+			
+			lastScrollTop = scrollTop;
+		});
+	</script>
 </body>
 
 </html>

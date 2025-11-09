@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html data-bs-theme="light">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>Tournament Admin - SVGE</title>
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+	<link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+	<link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+	<link rel="stylesheet" href="assets/css/styles.min.css?v2.2">
+	<link rel="stylesheet" href="assets/css/tournament.css">
+	<style>
+		.admin-header {
+			background: linear-gradient(135deg, #6e2b31 0%, #4a1f24 100%);
+			padding: 100px 0 40px;
+			color: white;
+		}
+
+		.admin-controls {
+			background: #f8f9fa;
+			padding: 30px 0;
+			border-bottom: 3px solid #6e2b31;
+		}
+
+		.control-section {
+			background: white;
+			padding: 25px;
+			border-radius: 10px;
+			margin-bottom: 20px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.control-section h4 {
+			color: #6e2b31;
+			font-weight: bold;
+			margin-bottom: 20px;
+			border-bottom: 2px solid #6e2b31;
+			padding-bottom: 10px;
+		}
+
+		.save-indicator {
+			position: fixed;
+			top: 90px;
+			right: 20px;
+			z-index: 1000;
+			padding: 15px 25px;
+			border-radius: 8px;
+			display: none;
+			font-weight: 600;
+		}
+
+		.save-indicator.success {
+			background: #28a745;
+			color: white;
+			display: block;
+		}
+
+		.save-indicator.error {
+			background: #dc3545;
+			color: white;
+			display: block;
+		}
+
+		.btn-admin {
+			background: #6e2b31;
+			border: none;
+			color: white;
+		}
+
+		.btn-admin:hover {
+			background: #4a1f24;
+			color: white;
+		}
+
+		.team-editor {
+			max-height: 400px;
+			overflow-y: auto;
+		}
+
+		.team-item {
+			background: #f8f9fa;
+			padding: 15px;
+			margin-bottom: 10px;
+			border-radius: 8px;
+			border: 1px solid #dee2e6;
+		}
+
+		.team-item h6 {
+			color: #6e2b31;
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		.winner-btn {
+			width: 100%;
+			margin-top: 5px;
+		}
+
+		.match-admin {
+			background: white;
+			padding: 15px;
+			border-radius: 8px;
+			border: 2px solid #6e2b31;
+			margin-bottom: 15px;
+		}
+
+		.match-admin .team {
+			padding: 10px;
+			margin: 5px 0;
+			background: #f8f9fa;
+			border-radius: 5px;
+			border: 1px solid #dee2e6;
+		}
+
+		.match-admin .team.winner {
+			background: #d4edda;
+			border-color: #28a745;
+			font-weight: bold;
+		}
+
+		/* Team Pool Styles */
+		.team-pool-container {
+			background: white;
+			padding: 20px;
+			border-radius: 10px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			position: sticky;
+			top: 90px;
+		}
+
+		.team-pool {
+			max-height: 600px;
+			overflow-y: auto;
+		}
+
+		.pool-team {
+			background: #f8f9fa;
+			padding: 12px;
+			margin-bottom: 10px;
+			border-radius: 8px;
+			border: 2px solid #dee2e6;
+			cursor: pointer;
+			transition: all 0.3s;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.pool-team:hover {
+			background: #e9ecef;
+			border-color: #6e2b31;
+			transform: translateX(5px);
+		}
+
+		.pool-team.assigned {
+			opacity: 0.5;
+			background: #e9ecef;
+			border-style: dashed;
+		}
+
+		.pool-team.assigned:hover {
+			transform: none;
+		}
+
+		.pool-team-name {
+			font-weight: 600;
+			color: #2a2a2a;
+		}
+
+		.pool-team-badge {
+			background: #6e2b31;
+			color: white;
+			padding: 2px 8px;
+			border-radius: 12px;
+			font-size: 0.75rem;
+		}
+
+		.bracket-slot {
+			min-height: 45px;
+			border: 2px dashed #dee2e6;
+			border-radius: 5px;
+			padding: 10px;
+			margin: 5px 0;
+			cursor: pointer;
+			transition: all 0.3s;
+			background: #f8f9fa;
+		}
+
+		.bracket-slot:hover {
+			border-color: #6e2b31;
+			background: #fff;
+		}
+
+		.bracket-slot.selected {
+			border-color: #28a745;
+			background: #d4edda;
+			border-style: solid;
+		}
+
+		.bracket-slot.filled {
+			background: white;
+			border-style: solid;
+			border-color: #6e2b31;
+		}
+
+		.bracket-slot .remove-team {
+			float: right;
+			color: #dc3545;
+			cursor: pointer;
+			font-size: 0.9rem;
+		}
+
+		.bracket-slot .remove-team:hover {
+			color: #a71d2a;
+		}
+
+		/* Team Selection Modal */
+		.team-selection-list {
+			max-height: 400px;
+			overflow-y: auto;
+			border: 1px solid #dee2e6;
+			border-radius: 8px;
+			padding: 10px;
+		}
+
+		.team-select-item {
+			background: #f8f9fa;
+			padding: 15px;
+			margin-bottom: 10px;
+			border-radius: 8px;
+			border: 2px solid #dee2e6;
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.team-select-item:hover {
+			background: #e9ecef;
+			border-color: #6e2b31;
+			transform: translateX(5px);
+		}
+
+		.team-select-item.assigned {
+			opacity: 0.6;
+			border-style: dashed;
+		}
+
+		.team-select-item.selected {
+			background: #d4edda;
+			border-color: #28a745;
+			font-weight: bold;
+		}
+
+		.team-select-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 5px;
+		}
+
+		.team-select-name {
+			font-size: 1.1rem;
+			font-weight: 600;
+			color: #2a2a2a;
+		}
+
+		.team-select-badge {
+			background: #6e2b31;
+			color: white;
+			padding: 3px 10px;
+			border-radius: 12px;
+			font-size: 0.85rem;
+		}
+
+		.team-select-details {
+			font-size: 0.9rem;
+			color: #6c757d;
+			margin-top: 5px;
+		}
+
+		.team-select-details i {
+			margin-right: 5px;
+			width: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Navigation Bar -->
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #6E2B31; padding: 10px 0;">
+		<div class="container">
+			<a class="navbar-brand" href="index.html">
+				<img src="assets/img/SVGE_LOGO_NO_TEXT.svg" style="height: 40px; margin-right: 10px;">
+				SVGE Admin
+			</a>
+			<div class="ms-auto">
+				<a href="manage-tournaments.html" class="btn btn-sm btn-outline-light me-2">
+					<i class="fa fa-list"></i> All Tournaments
+				</a>
+				<a href="tournaments.html" class="btn btn-sm btn-outline-light me-2">
+					<i class="fa fa-eye"></i> View Public
+				</a>
+				<button class="btn btn-sm btn-danger" onclick="logout()">
+					<i class="fa fa-sign-out"></i> Logout
+				</button>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Save Indicator -->
+	<div class="save-indicator" id="saveIndicator">
+		<i class="fa fa-check-circle"></i> Changes Saved!
+	</div>
+
+	<!-- Admin Header -->
+	<header class="admin-header">
+		<div class="container">
+			<h1 class="display-5">Tournament Administration</h1>
+			<p class="lead">Manage tournament details, teams, and bracket progression</p>
+			<div class="alert alert-info mt-3">
+				<i class="fa fa-info-circle"></i> <strong>Tournament ID:</strong> <span id="currentTournamentId"></span>
+			</div>
+		</div>
+	</header>
+
+	<!-- Admin Controls -->
+	<section class="admin-controls">
+		<div class="container">
+			<!-- Tournament Details -->
+			<div class="control-section">
+				<h4><i class="fa fa-info-circle"></i> Tournament Details</h4>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="mb-3">
+							<label for="tournamentTitle" class="form-label fw-bold">Tournament Title</label>
+							<input type="text" class="form-control" id="tournamentTitle" value="SVGE Mini Tournament">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3">
+							<label for="tournamentDate" class="form-label fw-bold">Tournament Date</label>
+							<input type="text" class="form-control" id="tournamentDate" value="November 9 - November 9, 2025" placeholder="e.g. Nov 15 - Nov 16, 2025">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3">
+							<label for="tournamentStatus" class="form-label fw-bold">Status</label>
+							<select class="form-control" id="tournamentStatus">
+								<option value="ongoing">Ongoing</option>
+								<option value="upcoming">Upcoming</option>
+								<option value="completed">Completed</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="mb-3">
+							<label for="tournamentImage" class="form-label fw-bold">Image Path</label>
+							<input type="text" class="form-control" id="tournamentImage" value="assets/img/bracket.png" placeholder="e.g. assets/img/tournament.png">
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="mb-3">
+							<label for="tournamentDescription" class="form-label fw-bold">Description</label>
+							<textarea class="form-control" id="tournamentDescription" rows="3">Join us for an exciting tournament! Battle it out with other teams to claim victory.</textarea>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Bracket Configuration -->
+			<div class="control-section">
+				<h4><i class="fa fa-sitemap"></i> Bracket Configuration</h4>
+				<div class="row align-items-center">
+					<div class="col-md-4">
+						<label for="numTeams" class="form-label fw-bold">Number of Teams:</label>
+						<select id="numTeams" class="form-select" onchange="handleTeamCountChange()">
+							<option value="4">4 Teams</option>
+							<option value="8" selected>8 Teams</option>
+							<option value="16">16 Teams</option>
+						</select>
+					</div>
+					<div class="col-md-8 text-md-end mt-3 mt-md-0">
+						<button class="btn btn-admin" onclick="randomizeBracket()">
+							<i class="fa fa-random"></i> Randomize Teams
+						</button>
+						<button class="btn btn-warning" onclick="resetBracket()">
+							<i class="fa fa-refresh"></i> Reset Bracket
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Team Management -->
+			<div class="control-section">
+				<h4><i class="fa fa-users"></i> Team Management</h4>
+				<div class="team-editor" id="teamEditor">
+					<!-- Teams will be generated here -->
+				</div>
+			</div>
+
+			<!-- Save Button -->
+			<div class="text-center">
+				<button class="btn btn-success btn-lg" onclick="saveAllChanges()" style="min-width: 250px;">
+					<i class="fa fa-save"></i> Save All Changes
+				</button>
+			</div>
+		</div>
+	</section>
+
+	<!-- Bracket Display with Team Pool -->
+	<section class="py-5">
+		<div class="container">
+			<h3 class="text-center mb-4">Tournament Bracket - Manual Assignment</h3>
+			
+			<div class="row">
+				<!-- Team Pool on Left -->
+				<div class="col-lg-3">
+					<div class="team-pool-container">
+						<h5 class="text-center mb-3"><i class="fa fa-users"></i> Team Pool</h5>
+						<p class="small text-muted text-center">Available teams</p>
+						<div id="teamPool" class="team-pool">
+							<!-- Team pool will be generated here -->
+						</div>
+					</div>
+				</div>
+
+				<!-- Bracket on Right -->
+				<div class="col-lg-9">
+					<div class="bracket-container" id="bracketContainer">
+						<!-- Bracket will be generated here -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Team Assignment Modal -->
+	<div class="modal fade" id="teamAssignModal" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Assign Team to Bracket Slot</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<div class="mb-3">
+						<h6>Slot Information:</h6>
+						<p class="text-muted mb-1"><strong>Match:</strong> <span id="modalMatchInfo"></span></p>
+						<p class="text-muted mb-3"><strong>Position:</strong> <span id="modalSlotInfo"></span></p>
+					</div>
+
+					<div class="mb-3">
+						<h6>Current Team:</h6>
+						<div id="modalCurrentTeam" class="alert alert-info">
+							No team assigned
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<div class="d-flex justify-content-between align-items-center mb-2">
+							<h6 class="mb-0">Select Team:</h6>
+							<button class="btn btn-sm btn-outline-danger" onclick="clearTeamFromModal()">
+								<i class="fa fa-times"></i> Clear Team
+							</button>
+						</div>
+						<div class="team-selection-list" id="teamSelectionList">
+							<!-- Team list will be generated here -->
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4"><span class="copyright">Designed By Rudra Mutalik, David Deng</span></div>
+				<div class="col-md-4">
+					<ul class="list-inline social-buttons">
+						<li class="list-inline-item"><a href="https://twitter.com/UoSVGE"><i class="fa fa-twitter"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.facebook.com/groups/586562508157171/"><i
+									class="fa fa-facebook"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.instagram.com/uosvge/"><i class="fa fa-instagram"></i></a>
+						</li>
+						<li class="list-inline-item"><a href="https://www.twitch.tv/uosvge"><i class="fa fa-twitch"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.youtube.com/channel/UCiLgPdg1SmBA7mdVzq-FaWw"><i
+									class="fa fa-youtube"></i></a></li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<ul class="list-inline quicklinks">
+						<li class="list-inline-item"><a
+								href="https://drive.google.com/file/d/1Mal9B43T7udX_nkvOQ9RG4lmYUU2J4v3/view?usp=sharing">Constitution</a>
+						</li>
+						<li class="list-inline-item"><a
+								href="https://drive.google.com/file/d/1-aBfNCNPlMcLBzbeBUTP5WEzGjLOGrnX/view?usp=sharing">Sportsmanship
+								and Conduct Policy</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/js/api-helper.js"></script>
+	<script src="assets/js/tournament-admin.js"></script>
+</body>
+
+</html>

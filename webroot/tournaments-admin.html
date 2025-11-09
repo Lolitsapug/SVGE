@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html data-bs-theme="light">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>Tournaments Admin - SVGE</title>
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+	<link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/css/styles.min.css?v2.2">
+	<link rel="stylesheet" href="assets/css/tournament.css">
+	<link rel="stylesheet" href="assets/css/tournaments-hub.css">
+	<style>
+		body {
+			padding-top: 70px;
+		}
+
+		.admin-banner {
+			background: linear-gradient(135deg, #6e2b31 0%, #4a1f24 100%);
+			padding: 40px 0;
+			color: white;
+			text-align: center;
+		}
+
+		.welcome-card {
+			background: white;
+			border-radius: 10px;
+			padding: 30px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			margin: 30px 0;
+		}
+
+		.welcome-card h3 {
+			color: #6e2b31;
+			font-weight: bold;
+		}
+
+		.quick-action-card {
+			background: white;
+			border-radius: 10px;
+			padding: 25px;
+			text-align: center;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s;
+			height: 100%;
+		}
+
+		.quick-action-card:hover {
+			transform: translateY(-5px);
+		}
+
+		.quick-action-card i {
+			font-size: 3rem;
+			color: #6e2b31;
+			margin-bottom: 15px;
+		}
+
+		.quick-action-card h5 {
+			color: #2a2a2a;
+			font-weight: bold;
+		}
+
+		.quick-action-card p {
+			color: #6c757d;
+		}
+
+		.quick-action-card .btn {
+			margin-top: 10px;
+		}
+
+		.info-box {
+			background: #f8f9fa;
+			border-left: 4px solid #6e2b31;
+			padding: 20px;
+			margin: 20px 0;
+			border-radius: 5px;
+		}
+
+		.info-box h6 {
+			color: #6e2b31;
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+
+		.info-box p {
+			margin: 0;
+			color: #2a2a2a;
+		}
+
+		.feature-list {
+			list-style: none;
+			padding: 0;
+		}
+
+		.feature-list li {
+			padding: 8px 0;
+			padding-left: 30px;
+			position: relative;
+		}
+
+		.feature-list li:before {
+			content: "✓";
+			position: absolute;
+			left: 0;
+			color: #28a745;
+			font-weight: bold;
+			font-size: 1.2rem;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Navigation Bar -->
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #6E2B31; padding: 10px 0;">
+		<div class="container">
+			<a class="navbar-brand" href="index.html">
+				<img src="assets/img/SVGE_LOGO_NO_TEXT.svg" style="height: 40px; margin-right: 10px;">
+				SVGE Admin
+			</a>
+			<div class="ms-auto">
+				<a href="tournaments.html" class="btn btn-sm btn-outline-light me-2">
+					<i class="fa fa-eye"></i> View Public
+				</a>
+				<button class="btn btn-sm btn-danger" onclick="logout()">
+					<i class="fa fa-sign-out"></i> Logout
+				</button>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Admin Banner -->
+	<section class="admin-banner">
+		<div class="container">
+			<h1 class="display-5 mb-3">Tournament Management Dashboard</h1>
+			<p class="lead">Manage all aspects of SVGE tournaments from one central location</p>
+		</div>
+	</section>
+
+	<!-- Welcome Section -->
+	<section class="py-5">
+		<div class="container">
+			<div class="welcome-card">
+				<h3 class="mb-4">Welcome, Tournament Administrator!</h3>
+				<p class="lead text-muted">
+					This dashboard provides you with complete control over tournament management. 
+					You can edit tournament details, manage brackets, add teams, and track competition progress.
+				</p>
+				<div class="info-box mt-4">
+					<h6><i class="fa fa-info-circle"></i> Quick Start Guide</h6>
+					<p>
+						<strong>Current Tournament:</strong> The tournament system is currently configured for the main tournament.
+						Use the "Edit Tournament" button below to access the full admin interface where you can manage teams,
+						update bracket progress, and configure tournament details.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Quick Actions -->
+	<section class="py-5" style="background-color: #F8F9FA;">
+		<div class="container">
+			<h3 class="text-center mb-5 fw-bold">Quick Actions</h3>
+			
+			<div class="row g-4">
+				<!-- Manage All Tournaments -->
+				<div class="col-md-6 col-lg-4">
+					<div class="quick-action-card">
+						<i class="fa fa-trophy"></i>
+						<h5>Manage Tournaments</h5>
+						<p>Create, edit, and manage all tournaments</p>
+						<a href="manage-tournaments.html" class="btn btn-admin">
+							<i class="fa fa-arrow-right"></i> Manage Tournaments
+						</a>
+					</div>
+				</div>
+
+				<!-- View Public Page -->
+				<div class="col-md-6 col-lg-4">
+					<div class="quick-action-card">
+						<i class="fa fa-eye"></i>
+						<h5>View Public Page</h5>
+						<p>See how your tournament appears to visitors</p>
+						<a href="tournament.html" class="btn btn-admin" target="_blank">
+							<i class="fa fa-external-link"></i> View Tournament
+						</a>
+					</div>
+				</div>
+
+				<!-- View Tournaments Hub -->
+				<div class="col-md-6 col-lg-4">
+					<div class="quick-action-card">
+						<i class="fa fa-list"></i>
+						<h5>Tournaments Hub</h5>
+						<p>View all tournaments in the public hub</p>
+						<a href="tournaments.html" class="btn btn-admin" target="_blank">
+							<i class="fa fa-external-link"></i> View Hub
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Features Overview -->
+	<section class="py-5">
+		<div class="container">
+			<h3 class="text-center mb-5 fw-bold">Admin Features</h3>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="info-box">
+						<h6><i class="fa fa-users"></i> Team Management</h6>
+						<ul class="feature-list">
+							<li>Add and edit team information</li>
+							<li>Set captain Discord tags</li>
+							<li>Set captain game IDs</li>
+							<li>Randomize team bracket positions</li>
+						</ul>
+					</div>
+				</div>
+				
+				<div class="col-md-6">
+					<div class="info-box">
+						<h6><i class="fa fa-sitemap"></i> Bracket Control</h6>
+						<ul class="feature-list">
+							<li>Support for 4, 8, or 16 team brackets</li>
+							<li>Advance winners to next rounds</li>
+							<li>Track match progression</li>
+							<li>Reset bracket if needed</li>
+						</ul>
+					</div>
+				</div>
+				
+				<div class="col-md-6">
+					<div class="info-box">
+						<h6><i class="fa fa-info-circle"></i> Tournament Details</h6>
+						<ul class="feature-list">
+							<li>Edit tournament title</li>
+							<li>Update tournament description</li>
+							<li>Set tournament dates</li>
+							<li>All changes reflected immediately on public page</li>
+						</ul>
+					</div>
+				</div>
+				
+				<div class="col-md-6">
+					<div class="info-box">
+						<h6><i class="fa fa-save"></i> Data Management</h6>
+						<ul class="feature-list">
+							<li>Auto-save progress</li>
+							<li>Manual save all changes</li>
+							<li>Data persisted locally</li>
+							<li>Reset option available</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Important Notes -->
+	<section class="py-5" style="background-color: #F8F9FA;">
+		<div class="container">
+			<div class="alert alert-info">
+				<h5><i class="fa fa-lightbulb"></i> Important Notes</h5>
+				<ul class="mb-0">
+					<li><strong>Password:</strong> The default admin password is "svgeadmin2025"</li>
+					<li><strong>Session:</strong> Your admin session lasts for 2 hours before requiring re-authentication</li>
+					<li><strong>Data Storage:</strong> All tournament data is stored locally in the browser</li>
+					<li><strong>Public View:</strong> Changes are immediately visible on the public tournament page</li>
+					<li><strong>Save Often:</strong> Remember to click "Save All Changes" after making edits</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4"><span class="copyright">Designed By Rudra Mutalik, David Deng</span></div>
+				<div class="col-md-4">
+					<ul class="list-inline social-buttons">
+						<li class="list-inline-item"><a href="https://twitter.com/UoSVGE"><i class="fa fa-twitter"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.facebook.com/groups/586562508157171/"><i
+									class="fa fa-facebook"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.instagram.com/uosvge/"><i class="fa fa-instagram"></i></a>
+						</li>
+						<li class="list-inline-item"><a href="https://www.twitch.tv/uosvge"><i class="fa fa-twitch"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.youtube.com/channel/UCiLgPdg1SmBA7mdVzq-FaWw"><i
+									class="fa fa-youtube"></i></a></li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<ul class="list-inline quicklinks">
+						<li class="list-inline-item"><a
+								href="https://drive.google.com/file/d/1Mal9B43T7udX_nkvOQ9RG4lmYUU2J4v3/view?usp=sharing">Constitution</a>
+						</li>
+						<li class="list-inline-item"><a
+								href="https://drive.google.com/file/d/1-aBfNCNPlMcLBzbeBUTP5WEzGjLOGrnX/view?usp=sharing">Sportsmanship
+								and Conduct Policy</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+	<script>
+		// Check authentication
+		document.addEventListener('DOMContentLoaded', function() {
+			const isAuth = sessionStorage.getItem('adminAuth');
+			const authTime = sessionStorage.getItem('authTime');
+			
+			if (!isAuth || !authTime || (Date.now() - parseInt(authTime)) > 7200000) {
+				window.location.href = 'admin-login.html';
+			}
+		});
+
+		// Logout function
+		function logout() {
+			sessionStorage.removeItem('adminAuth');
+			sessionStorage.removeItem('authTime');
+			window.location.href = 'admin-login.html';
+		}
+	</script>
+</body>
+
+</html>

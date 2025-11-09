@@ -1,0 +1,246 @@
+/* Tournaments Hub Page Styles */
+
+/* Hero Header */
+.tournaments-hero {
+    position: relative;
+    background: url('../img/SouthLANder.png') center center;
+    background-size: cover;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+}
+
+.tournaments-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(110, 43, 49, 0.2) 0%, rgba(74, 31, 36, 0.2) 100%);
+}
+
+/* Remove top padding for tournaments page */
+body#page-top {
+    padding-top: 0 !important;
+}
+
+.hero-overlay {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.hero-overlay h1 {
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 3rem;
+    background-color: rgba(110, 43, 49, 0.6);
+    padding: 15px 30px;
+    display: inline-block;
+    border-radius: 8px;
+}
+
+.hero-overlay p {
+    font-family: Montserrat, sans-serif;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 10px 20px;
+    display: inline-block;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+/* Tournament Cards */
+.tournament-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.tournament-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.tournament-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.tournament-image-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: #2a2a2a;
+}
+
+.tournament-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.tournament-card:hover .tournament-image {
+    transform: scale(1.05);
+}
+
+.tournament-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.tournament-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #2a2a2a;
+    margin: 0;
+}
+
+.tournament-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.tournament-date {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.tournament-date i {
+    margin-right: 5px;
+}
+
+.tournament-status {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.status-ongoing {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-upcoming {
+    background-color: #007bff;
+    color: white;
+}
+
+.status-completed {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tournaments-hero {
+        height: 300px;
+    }
+
+    .hero-overlay h1 {
+        font-size: 2rem;
+    }
+
+    .tournament-image-container {
+        height: 180px;
+    }
+}
+
+/* Animation for cards on load */
+.tournament-card {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Stagger animation for cards */
+.col-md-6:nth-child(1) .tournament-card { animation-delay: 0.1s; }
+.col-md-6:nth-child(2) .tournament-card { animation-delay: 0.2s; }
+.col-md-6:nth-child(3) .tournament-card { animation-delay: 0.3s; }
+.col-md-6:nth-child(4) .tournament-card { animation-delay: 0.4s; }
+.col-md-6:nth-child(5) .tournament-card { animation-delay: 0.5s; }
+.col-md-6:nth-child(6) .tournament-card { animation-delay: 0.6s; }
+
+/* Footer Styles */
+footer {
+    background-color: #fff;
+    padding: 40px 0;
+    color: #2a2a2a;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+}
+
+footer .copyright {
+    font-size: 0.9rem;
+    color: #2a2a2a;
+}
+
+footer .social-buttons {
+    margin: 0;
+    padding: 0;
+}
+
+footer .social-buttons a {
+    background: #ffc107;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+footer .social-buttons i {
+    color: white;
+    font-size: 1.2rem;
+}
+
+footer .quicklinks {
+    margin: 0;
+    padding: 0;
+}
+
+footer .quicklinks a {
+    color: #2a2a2a;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+footer .quicklinks a:hover {
+    color: #6e2b31;
+}
+

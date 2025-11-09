@@ -159,6 +159,19 @@ body#page-top .masthead {
     border-color: #6e2b31;
 }
 
+.match-scores {
+    padding: 8px 20px;
+    background-color: #f8f9fa;
+    text-align: center;
+    border-top: 1px solid #dee2e6;
+}
+
+.match-scores .score {
+    font-weight: bold;
+    font-size: 14px;
+    color: #6e2b31;
+}
+
 .team {
     padding: 15px 20px;
     border-bottom: 1px solid #e9ecef;
@@ -254,11 +267,15 @@ body#page-top .masthead {
 /* Championship styling */
 .bracket-round.championship {
     min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .bracket-round.championship .match {
     border: 3px solid #b89551;
     background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+    margin-top: 0;
 }
 
 .bracket-round.championship .round-title {

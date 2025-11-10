@@ -435,5 +435,371 @@
     "date": "Test1",
     "status": "upcoming",
     "image": "assets/img/SouthLANder.png"
+  },
+  {
+    "id": "16ppltest",
+    "numTeams": 16,
+    "teams": [
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 2,
+        "name": "Team 3"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 14,
+        "name": "Team 15"
+      },
+      {
+        "captain": "",
+        "eliminated": false,
+        "gameId": "",
+        "id": 8,
+        "name": "Team 9"
+      },
+      {
+        "captain": "",
+        "eliminated": false,
+        "gameId": "",
+        "id": 6,
+        "name": "Team 7"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 9,
+        "name": "Team 10"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 0,
+        "name": "Team 1"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 15,
+        "name": "Team 16"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 1,
+        "name": "Team 2"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 4,
+        "name": "Team 5"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 12,
+        "name": "Team 13"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 7,
+        "name": "Team 8"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 13,
+        "name": "Team 14"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 3,
+        "name": "Team 4"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 5,
+        "name": "Team 6"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 10,
+        "name": "Team 11"
+      },
+      {
+        "captain": "",
+        "eliminated": true,
+        "gameId": "",
+        "id": 11,
+        "name": "Team 12"
+      }
+    ],
+    "matches": {
+      "w0-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 2,
+        "team2": 14,
+        "winner": 2
+      },
+      "w0-1": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 8,
+        "team2": 6,
+        "winner": 8
+      },
+      "w0-2": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 9,
+        "team2": 0,
+        "winner": 9
+      },
+      "w0-3": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 15,
+        "team2": 1,
+        "winner": 15
+      },
+      "w0-4": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 4,
+        "team2": 12,
+        "winner": 4
+      },
+      "w0-5": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 7,
+        "team2": 13,
+        "winner": 7
+      },
+      "w0-6": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 3,
+        "team2": 5,
+        "winner": 3
+      },
+      "w0-7": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 10,
+        "team2": 11,
+        "winner": 10
+      },
+      "w1-0": {
+        "team1": 2,
+        "team2": 8,
+        "score1": 1,
+        "score2": 0,
+        "winner": 2
+      },
+      "w1-1": {
+        "team1": 9,
+        "team2": 15,
+        "score1": 1,
+        "score2": 0,
+        "winner": 9
+      },
+      "w1-2": {
+        "team1": 4,
+        "team2": 7,
+        "score1": 1,
+        "score2": 0,
+        "winner": 4
+      },
+      "w1-3": {
+        "team1": 3,
+        "team2": 10,
+        "score1": 1,
+        "score2": 0,
+        "winner": 3
+      },
+      "w2-0": {
+        "team1": 2,
+        "team2": 9,
+        "score1": 1,
+        "score2": 0,
+        "winner": 2
+      },
+      "w2-1": {
+        "team1": 4,
+        "team2": 3,
+        "score1": 1,
+        "score2": 0,
+        "winner": 4
+      },
+      "w3-0": {
+        "team1": 2,
+        "team2": 4,
+        "score1": 1,
+        "score2": 0,
+        "winner": 2
+      },
+      "final": {
+        "team1": 2,
+        "team2": 3,
+        "score1": 1,
+        "score2": 0,
+        "winner": 2
+      }
+    },
+    "losersMatches": {
+      "l0-0": {
+        "team1": 14,
+        "team1Source": "w",
+        "team2": 6,
+        "team2Source": "w",
+        "score1": 1,
+        "score2": 0,
+        "winner": 14
+      },
+      "l0-1": {
+        "team1": 0,
+        "team1Source": "w",
+        "team2": 1,
+        "team2Source": "w",
+        "score1": 1,
+        "score2": 0,
+        "winner": 0
+      },
+      "l0-2": {
+        "team1": 12,
+        "team1Source": "w",
+        "team2": 13,
+        "team2Source": "w",
+        "score1": 1,
+        "score2": 0,
+        "winner": 12
+      },
+      "l0-3": {
+        "team1": 5,
+        "team1Source": "w",
+        "team2": 11,
+        "team2Source": "w",
+        "score1": 1,
+        "score2": 0,
+        "winner": 5
+      },
+      "l1-0": {
+        "team1": 14,
+        "team1Source": "l",
+        "team2": 8,
+        "team2Source": "w",
+        "score1": 1,
+        "score2": 0,
+        "winner": 14
+      },
+      "l1-1": {
+        "team1": 0,
+        "team1Source": "l",
+        "team2": 15,
+        "team2Source": "w",
+        "score1": 2,
+        "score2": 1,
+        "winner": 0
+      },
+      "l1-2": {
+        "team1": 12,
+        "team1Source": "l",
+        "team2": 7,
+        "team2Source": "w",
+        "score1": 1,
+        "score2": 0,
+        "winner": 12
+      },
+      "l1-3": {
+        "team1": 5,
+        "team1Source": "l",
+        "team2": 10,
+        "team2Source": "w",
+        "score1": 1,
+        "score2": 0,
+        "winner": 5
+      },
+      "l2-0": {
+        "team1": 14,
+        "team1Source": "l",
+        "team2": 0,
+        "team2Source": "l",
+        "score1": 1,
+        "score2": 0,
+        "winner": 14
+      },
+      "l2-1": {
+        "team1": 12,
+        "team1Source": "l",
+        "team2": 5,
+        "team2Source": "l",
+        "score1": 1,
+        "score2": 0,
+        "winner": 12
+      },
+      "l3-0": {
+        "team1": 9,
+        "team1Source": "w",
+        "team2": 14,
+        "team2Source": "l",
+        "score1": 1,
+        "score2": 0,
+        "winner": 9
+      },
+      "l3-1": {
+        "team1": 3,
+        "team1Source": "w",
+        "team2": 12,
+        "team2Source": "l",
+        "score1": 1,
+        "score2": 0,
+        "winner": 3
+      },
+      "l4-0": {
+        "team1": 3,
+        "team1Source": "l",
+        "team2": 9,
+        "team2Source": "l",
+        "score1": 1,
+        "score2": 0,
+        "winner": 3
+      },
+      "l5-0": {
+        "team1": 3,
+        "team1Source": "l",
+        "team2": 4,
+        "team2Source": "w",
+        "score1": 1,
+        "score2": 0,
+        "winner": 3
+      }
+    },
+    "bracketType": "double",
+    "title": "double elim 16 ppl test",
+    "description": "Join us for an exciting tournament! Battle it out with other teams to claim victory.",
+    "date": "November 9 - November 9, 2025",
+    "status": "ongoing",
+    "image": "assets/img/bracket.png"
   }
 ]

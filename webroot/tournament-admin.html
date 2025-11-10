@@ -189,6 +189,49 @@
 			background: #f8f9fa;
 		}
 
+		/* Compact admin bracket adjustments to make the admin view denser */
+		/* Increase the per-round min-width so the bracket columns are wider and easier to visualize */
+		.bracket-container .bracket-round {
+			min-width: 260px;
+			max-width: 320px;
+		}
+
+		.match-admin {
+			padding: 10px;
+			border-radius: 6px;
+			border: 1px solid #6e2b31;
+			margin-bottom: 12px;
+		}
+
+		.match-admin .team {
+			padding: 8px;
+			margin: 4px 0;
+			background: #f8f9fa;
+			border-radius: 4px;
+		}
+
+		.bracket-slot {
+			min-height: 36px;
+			padding: 8px;
+		}
+
+		.round-title {
+			font-size: 1rem;
+			margin-bottom: 16px;
+		}
+
+		.match-admin .score-inputs .form-control-sm {
+			padding: 4px 6px;
+			font-size: 0.85rem;
+		}
+
+		/* Inline score input sizing for compact admin rows */
+		.match-admin .score-input {
+			width: 80px;
+			padding: 3px 6px;
+			font-size: 0.9rem;
+		}
+
 		.bracket-slot:hover {
 			border-color: #6e2b31;
 			background: #fff;
@@ -408,12 +451,15 @@
 				</div>
 			</div>
 
-			<!-- Save Button -->
-			<div class="text-center">
-				<button class="btn btn-success btn-lg" onclick="saveAllChanges()" style="min-width: 250px;">
-					<i class="fa fa-save"></i> Save All Changes
-				</button>
-			</div>
+		<!-- Save Button -->
+		<div class="text-center">
+			<button class="btn btn-success btn-lg" onclick="saveAllChanges()" style="min-width: 200px;">
+				<i class="fa fa-save"></i> Save All Changes
+			</button>
+			<button class="btn btn-outline-primary btn-lg ms-2" onclick="validateBracket()" title="Validate bracket routing" style="min-width: 200px;">
+				<i class="fa fa-check-circle"></i> Validate Bracket
+			</button>
+		</div>
 		</div>
 	</section>
 
@@ -423,8 +469,8 @@
 			<h3 class="text-center mb-4">Tournament Bracket - Manual Assignment</h3>
 			
 			<div class="row">
-				<!-- Team Pool on Left -->
-				<div class="col-lg-3">
+				<!-- Team Pool on Left (narrower to give bracket more space) -->
+				<div class="col-lg-2">
 					<div class="team-pool-container">
 						<h5 class="text-center mb-3"><i class="fa fa-users"></i> Team Pool</h5>
 						<p class="small text-muted text-center">Available teams</p>
@@ -434,8 +480,8 @@
 					</div>
 				</div>
 
-				<!-- Bracket on Right -->
-				<div class="col-lg-9">
+				<!-- Bracket on Right (wider) -->
+				<div class="col-lg-10">
 					<div class="bracket-container" id="bracketContainer">
 						<!-- Bracket will be generated here -->
 					</div>
@@ -480,6 +526,24 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Validation Results Modal -->
+	<div class="modal fade" id="validationModal" tabindex="-1">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Bracket Validation Results</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+					<div id="validationResults"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
 			</div>
 		</div>

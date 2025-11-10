@@ -256,14 +256,14 @@ function generateTeamPool() {
     pool.innerHTML = '';
     
     tournamentData.teams.forEach((team, index) => {
-        const isAssigned = isTeamAssignedToBracket(index);
+        const isAssigned = isTeamAssignedToBracket(team.id);
         
         const teamDiv = document.createElement('div');
         teamDiv.className = `pool-team ${isAssigned ? 'assigned' : ''}`;
-        teamDiv.setAttribute('data-team-id', index);
+        teamDiv.setAttribute('data-team-id', team.id);
         teamDiv.innerHTML = `
             <span class="pool-team-name">${team.name}</span>
-            <span class="pool-team-badge">#${index + 1}</span>
+            <span class="pool-team-badge">#${team.id + 1}</span>
         `;
         
         pool.appendChild(teamDiv);
@@ -277,6 +277,13 @@ function isTeamAssignedToBracket(teamId) {
         const match = tournamentData.matches[matchKey];
         if (match.team1 === teamId || match.team2 === teamId) {
             return true;
+        }
+    }
+    // Also check losers matches
+    if (tournamentData.losersMatches) {
+        for (let lm in tournamentData.losersMatches) {
+            const m = tournamentData.losersMatches[lm];
+            if (m.team1 === teamId || m.team2 === teamId) return true;
         }
     }
     return false;
@@ -297,22 +304,29 @@ function openTeamAssignModal(matchKey, slotType, matchNum, roundNum) {
         document.getElementById('modalMatchInfo').textContent = `${roundText} - Match ${matchNum + 1}`;
         document.getElementById('modalSlotInfo').textContent = slotType === 'team1' ? 'Team 1 (Top)' : 'Team 2 (Bottom)';
         
-        // Get current team
+        // Get current team (support winners and losers matches)
         let currentTeamId = null;
         if (tournamentData.matches[matchKey]) {
             currentTeamId = tournamentData.matches[matchKey][slotType];
+        } else if (tournamentData.losersMatches && tournamentData.losersMatches[matchKey]) {
+            currentTeamId = tournamentData.losersMatches[matchKey][slotType];
         }
         
         // Display current team
         const currentTeamDiv = document.getElementById('modalCurrentTeam');
-        if (currentTeamId !== null && currentTeamId !== undefined && tournamentData.teams[currentTeamId]) {
-            const team = tournamentData.teams[currentTeamId];
+            if (currentTeamId !== null && currentTeamId !== undefined) {
+            const team = getTeamById(currentTeamId);
+            if (team) {
             currentTeamDiv.className = 'alert alert-success';
             currentTeamDiv.innerHTML = `
                 <strong>${team.name}</strong><br>
                 <small><i class="fa fa-user"></i> Discord: ${team.captain || 'Not set'}</small><br>
                 <small><i class="fa fa-gamepad"></i> Game ID: ${team.gameId || 'Not set'}</small>
             `;
+            } else {
+                currentTeamDiv.className = 'alert alert-info';
+                currentTeamDiv.textContent = 'No team assigned';
+            }
         } else {
             currentTeamDiv.className = 'alert alert-info';
             currentTeamDiv.textContent = 'No team assigned';
@@ -335,8 +349,8 @@ function generateTeamSelectionList(currentTeamId) {
     list.innerHTML = '';
     
     tournamentData.teams.forEach((team, index) => {
-        const isAssigned = isTeamAssignedToBracket(index);
-        const isCurrent = currentTeamId === index;
+        const isAssigned = isTeamAssignedToBracket(team.id);
+        const isCurrent = currentTeamId === team.id;
         
         const teamItem = document.createElement('div');
         teamItem.className = `team-select-item ${isAssigned && !isCurrent ? 'assigned' : ''} ${isCurrent ? 'selected' : ''}`;
@@ -344,7 +358,7 @@ function generateTeamSelectionList(currentTeamId) {
         teamItem.innerHTML = `
             <div class="team-select-header">
                 <span class="team-select-name">${team.name}</span>
-                <span class="team-select-badge">Team #${index + 1}</span>
+                <span class="team-select-badge">Team #${team.id + 1}</span>
             </div>
             <div class="team-select-details">
                 <div><i class="fa fa-user"></i> Discord: ${team.captain || 'Not set'}</div>
@@ -354,7 +368,7 @@ function generateTeamSelectionList(currentTeamId) {
         `;
         
         if (!isAssigned || isCurrent) {
-            teamItem.onclick = () => assignTeamFromModal(index);
+            teamItem.onclick = () => assignTeamFromModal(team.id);
         }
         
         list.appendChild(teamItem);
@@ -680,54 +694,89 @@ function createMatchContent(matchDiv, matchKey, team1Id, team2Id, winnerId, matc
     matchHeader.innerHTML = `<strong>Match ${matchNum + 1}</strong>`;
     matchDiv.appendChild(matchHeader);
     
-    // Team 1 slot
+    // Show where this match advances to (helpful for admin clarity)
+    if (!matchKey.startsWith('l')) {
+        const keyParts = matchKey.replace(/^w?/, '').split('-');
+        const rNum = parseInt(keyParts[0]);
+        const mNum = parseInt(keyParts[1]);
+        const totalWinnersRounds = Math.log2(tournamentData.numTeams);
+        if (!isNaN(rNum) && rNum !== 'final') {
+            if (rNum < totalWinnersRounds - 1) {
+                const nextRound = rNum + 1;
+                const nextMatch = Math.floor(mNum / 2);
+                const nextSlot = mNum % 2 === 0 ? 'team1' : 'team2';
+                const nextInfo = document.createElement('div');
+                nextInfo.className = 'text-muted small next-info mb-2';
+                nextInfo.textContent = `Advances to: w${nextRound}-${nextMatch} (${nextSlot})`;
+                matchDiv.appendChild(nextInfo);
+            } else if (rNum === totalWinnersRounds - 1) {
+                const nextInfo = document.createElement('div');
+                nextInfo.className = 'text-muted small next-info mb-2';
+                nextInfo.textContent = 'Winner advances to Grand Finals (team1)';
+                matchDiv.appendChild(nextInfo);
+            }
+        }
+    }
+    
+    // Get current scores (display 0 as default in inputs, but don't treat as entered unless stored in matchData)
+    const score1 = (matchData && matchData.score1 !== undefined && matchData.score1 !== null) ? matchData.score1 : 0;
+    const score2 = (matchData && matchData.score2 !== undefined && matchData.score2 !== null) ? matchData.score2 : 0;
+
+    // Team 1 row: slot on left, score input on right
+    const team1Row = document.createElement('div');
+    team1Row.className = 'd-flex align-items-center justify-content-between mb-2';
     const team1Slot = createBracketSlot(matchKey, 'team1', team1Id, winnerId, matchNum, 0);
-    matchDiv.appendChild(team1Slot);
-    
-    // Team 2 slot
+    team1Slot.style.flex = '1';
+    team1Row.appendChild(team1Slot);
+
+    const scoreWrapper1 = document.createElement('div');
+    scoreWrapper1.style.width = '90px';
+    scoreWrapper1.className = 'ms-2';
+    const team1Obj = (team1Id !== null && team1Id !== undefined) ? getTeamById(team1Id) : null;
+    const team1Name = team1Obj ? team1Obj.name : 'Team 1';
+    const input1 = document.createElement('input');
+    input1.type = 'number';
+    input1.className = 'form-control form-control-sm score-input';
+    input1.id = `score1_${matchKey}`;
+    input1.placeholder = 'Score';
+    input1.min = 0;
+    input1.value = score1;
+    if (team1Id === null) input1.disabled = true;
+    input1.setAttribute('onchange', `updateScore('${matchKey}', 'score1', this.value)`);
+    scoreWrapper1.appendChild(input1);
+    team1Row.appendChild(scoreWrapper1);
+    matchDiv.appendChild(team1Row);
+
+    // Team 2 row
+    const team2Row = document.createElement('div');
+    team2Row.className = 'd-flex align-items-center justify-content-between mb-2';
     const team2Slot = createBracketSlot(matchKey, 'team2', team2Id, winnerId, matchNum, 0);
-    matchDiv.appendChild(team2Slot);
-    
-    // Get current scores
-    const score1 = matchData?.score1 || '';
-    const score2 = matchData?.score2 || '';
-    
-    // Score inputs - positioned to match team slots above
-    const scoresDiv = document.createElement('div');
-    scoresDiv.className = 'mt-2 score-inputs';
-    
-    // Get team names for labels
-    const team1Name = team1Id !== null && tournamentData.teams[team1Id] ? tournamentData.teams[team1Id].name : 'Team 1';
-    const team2Name = team2Id !== null && tournamentData.teams[team2Id] ? tournamentData.teams[team2Id].name : 'Team 2';
-    
-    scoresDiv.innerHTML = `
-        <div class="row g-2">
-            <div class="col-6">
-                <label class="form-label small mb-1">${team1Name}</label>
-                <input type="number" class="form-control form-control-sm score-input" 
-                       id="score1_${matchKey}" 
-                       placeholder="Score" 
-                       min="0"
-                       value="${score1}"
-                       ${team1Id === null ? 'disabled' : ''}
-                       onchange="updateScore('${matchKey}', 'score1', this.value)">
-            </div>
-            <div class="col-6">
-                <label class="form-label small mb-1">${team2Name}</label>
-                <input type="number" class="form-control form-control-sm score-input" 
-                       id="score2_${matchKey}" 
-                       placeholder="Score" 
-                       min="0"
-                       value="${score2}"
-                       ${team2Id === null ? 'disabled' : ''}
-                       onchange="updateScore('${matchKey}', 'score2', this.value)">
-            </div>
-        </div>
-        <div class="text-center mt-1">
-            <small class="text-muted">Higher score wins</small>
-        </div>
-    `;
-    matchDiv.appendChild(scoresDiv);
+    team2Slot.style.flex = '1';
+    team2Row.appendChild(team2Slot);
+
+    const scoreWrapper2 = document.createElement('div');
+    scoreWrapper2.style.width = '90px';
+    scoreWrapper2.className = 'ms-2';
+    const team2Obj = (team2Id !== null && team2Id !== undefined) ? getTeamById(team2Id) : null;
+    const team2Name = team2Obj ? team2Obj.name : 'Team 2';
+    const input2 = document.createElement('input');
+    input2.type = 'number';
+    input2.className = 'form-control form-control-sm score-input';
+    input2.id = `score2_${matchKey}`;
+    input2.placeholder = 'Score';
+    input2.min = 0;
+    input2.value = score2;
+    if (team2Id === null) input2.disabled = true;
+    input2.setAttribute('onchange', `updateScore('${matchKey}', 'score2', this.value)`);
+    scoreWrapper2.appendChild(input2);
+    team2Row.appendChild(scoreWrapper2);
+    matchDiv.appendChild(team2Row);
+
+    // Small helper text
+    const helper = document.createElement('div');
+    helper.className = 'text-muted small mt-1';
+    helper.textContent = 'Higher score wins';
+    matchDiv.appendChild(helper);
     
     return matchDiv;
 }
@@ -736,13 +785,13 @@ function createMatchContent(matchDiv, matchKey, team1Id, team2Id, winnerId, matc
 function createBracketSlot(matchKey, slotType, teamId, winnerId, matchNum, roundNum) {
     const slot = document.createElement('div');
     const isWinner = teamId !== null && teamId !== undefined && teamId === winnerId;
-    
-    if (teamId !== null && teamId !== undefined && tournamentData.teams[teamId]) {
+    const teamObj = (teamId !== null && teamId !== undefined) ? getTeamById(teamId) : null;
+    if (teamObj) {
         slot.className = `bracket-slot filled ${isWinner ? 'winner' : ''}`;
-        slot.innerHTML = `${tournamentData.teams[teamId].name}`;
+        slot.innerHTML = `${teamObj.name}`;
     } else {
         slot.className = `bracket-slot`;
-        slot.innerHTML = `<em class="text-muted">Click to assign team</em>`;
+        slot.innerHTML = `<em class="text-muted">assign team</em>`;
     }
     
     slot.onclick = () => openTeamAssignModal(matchKey, slotType, matchNum, roundNum);
@@ -765,31 +814,52 @@ function updateScore(matchKey, scoreField, value) {
         matchData = tournamentData.matches[matchKey];
     }
     
-    // Store the score
-    matchData[scoreField] = parseInt(value);
-    
-    // Check if both scores are entered
-    const score1 = matchData.score1;
-    const score2 = matchData.score2;
-    
-    if (score1 !== null && score1 !== undefined && score2 !== null && score2 !== undefined) {
-        // Determine winner based on scores
-        let winnerId = null;
-        
-        if (score1 > score2) {
-            winnerId = matchData.team1;
-        } else if (score2 > score1) {
-            winnerId = matchData.team2;
-        }
-        // If scores are equal, no winner is set
-        
-        if (winnerId !== null && winnerId !== undefined) {
-            advanceWinner(matchKey, winnerId);
-        } else {
-            // Clear winner if tied
-            matchData.winner = null;
-            generateBracket();
-        }
+    // Store the score (if value is empty or NaN, leave as undefined)
+    const parsed = parseInt(value);
+    if (!isNaN(parsed)) {
+        matchData[scoreField] = parsed;
+    } else {
+        // If cleared, remove the stored score so it falls back to default display
+        delete matchData[scoreField];
+    }
+
+    // Determine stored scores (may be undefined)
+    let s1 = matchData.score1;
+    let s2 = matchData.score2;
+
+    // If both scores are not present, don't auto-resolve (user hasn't entered anything meaningful)
+    const s1Missing = s1 === null || s1 === undefined;
+    const s2Missing = s2 === null || s2 === undefined;
+    if (s1Missing && s2Missing) {
+        // Just re-render to update UI state
+        generateBracket();
+        return;
+    }
+
+    // If one score is present and the other missing, treat the missing one as 0 for auto-resolution
+    if (s1Missing) {
+        s1 = 0;
+        matchData.score1 = 0;
+    }
+    if (s2Missing) {
+        s2 = 0;
+        matchData.score2 = 0;
+    }
+
+    // Now both s1 and s2 are defined numbers — determine winner
+    let winnerId = null;
+    if (s1 > s2) {
+        winnerId = matchData.team1;
+    } else if (s2 > s1) {
+        winnerId = matchData.team2;
+    }
+
+    if (winnerId !== null && winnerId !== undefined) {
+        advanceWinner(matchKey, winnerId);
+    } else {
+        // Tie — clear winner and re-render
+        matchData.winner = null;
+        generateBracket();
     }
 }
 
@@ -891,24 +961,33 @@ function advanceWinner(matchKey, teamId, slot) {
                 if (!tournamentData.losersMatches[losersMatchKey]) {
                     tournamentData.losersMatches[losersMatchKey] = {};
                 }
-                
+
                 // Assign to team slot
                 if (roundNum === 0) {
                     // For first losers round, alternate slots based on match number
                     // Winners match 0 loser → Losers match 0 team1
                     // Winners match 1 loser → Losers match 0 team2
                     if (matchNum % 2 === 0) {
-                        tournamentData.losersMatches[losersMatchKey].team1 = loserId;
+                        // avoid duplicate placement if this team is already in losers
+                        if (!isTeamInLosers(loserId)) {
+                            tournamentData.losersMatches[losersMatchKey].team1 = loserId;
+                            tournamentData.losersMatches[losersMatchKey].team1Source = 'w';
+                        }
                     } else {
-                        tournamentData.losersMatches[losersMatchKey].team2 = loserId;
+                        if (!isTeamInLosers(loserId)) {
+                            tournamentData.losersMatches[losersMatchKey].team2 = loserId;
+                            tournamentData.losersMatches[losersMatchKey].team2Source = 'w';
+                        }
                     }
                 } else {
-                    // For later rounds, they play against winners from previous losers round
-                    // Assign to the first available slot (team2 usually, as team1 comes from losers bracket)
-                    if (!tournamentData.losersMatches[losersMatchKey].team2) {
-                        tournamentData.losersMatches[losersMatchKey].team2 = loserId;
-                    } else if (!tournamentData.losersMatches[losersMatchKey].team1) {
-                        tournamentData.losersMatches[losersMatchKey].team1 = loserId;
+                    // For later rounds, try to place the loser into a match pairing a 'w' with an 'l'
+                    const placed = placeInLosersRound(losersRound, losersMatch, loserId, 'w');
+                    if (!placed) {
+                        // As a fallback, put into the computed match slot (team2) and mark source
+                        if (!isTeamInLosers(loserId)) {
+                            tournamentData.losersMatches[losersMatchKey].team2 = loserId;
+                            tournamentData.losersMatches[losersMatchKey].team2Source = 'w';
+                        }
                     }
                 }
             }
@@ -922,21 +1001,54 @@ function advanceWinner(matchKey, teamId, slot) {
                     tournamentData.matches['final'] = {};
                 }
                 tournamentData.matches['final'].team2 = teamId;
+                console.log(`🏆 Losers Final winner (Team ${teamId}) → Grand Finals team2`);
             } else {
                 // Winner advances to next losers round
                 const nextRound = roundNum + 1;
-                const nextMatch = Math.floor(matchNum / 2);
-                const losersMatchKey = `l${nextRound}-${nextMatch}`;
-                const nextSlot = matchNum % 2;
-                
-                if (!tournamentData.losersMatches[losersMatchKey]) {
-                    tournamentData.losersMatches[losersMatchKey] = {};
-                }
-                
-                if (nextSlot === 0) {
-                    tournamentData.losersMatches[losersMatchKey].team1 = teamId;
+
+                // Determine matches in this and next rounds so we can choose mapping strategy
+                const matchesInThis = getLosersMatchesCount(roundNum, tournamentData.numTeams);
+                const matchesInNext = getLosersMatchesCount(nextRound, tournamentData.numTeams);
+
+                // If next round has the same number of matches, map by identity (matchNum -> same match index)
+                // Otherwise, group pairs into the same next-match (floor(matchNum/2)).
+                const preferredMatch = (matchesInNext === matchesInThis) ? matchNum : Math.floor(matchNum / 2);
+
+                // Determine preferred slot: when preserving indices, default to team1; otherwise alternate by matchNum
+                const preferredSlotKey = (matchesInNext === matchesInThis) ? 'team1' : ((matchNum % 2 === 0) ? 'team1' : 'team2');
+
+                console.log(`📍 Losers advancement: ${matchKey} (Team ${teamId}) | Round ${roundNum} Match ${matchNum}`);
+                console.log(`   Matches: This round=${matchesInThis}, Next round=${matchesInNext}`);
+                console.log(`   Target: l${nextRound}-${preferredMatch} ${preferredSlotKey}`);
+
+                // Try intelligent placement first (this will try to pair 'l' with existing 'w' where appropriate)
+                const placedLoserWinner = placeInLosersRound(nextRound, preferredMatch, teamId, 'l');
+                if (!placedLoserWinner) {
+                    // Fallback: place into preferred match/slot if free, else try opposite slot, else overwrite
+                    const losersMatchKey = `l${nextRound}-${preferredMatch}`;
+                    if (!tournamentData.losersMatches[losersMatchKey]) {
+                        tournamentData.losersMatches[losersMatchKey] = {};
+                    }
+
+                    if (!tournamentData.losersMatches[losersMatchKey][preferredSlotKey]) {
+                        tournamentData.losersMatches[losersMatchKey][preferredSlotKey] = teamId;
+                        tournamentData.losersMatches[losersMatchKey][`${preferredSlotKey}Source`] = 'l';
+                        console.log(`   ✓ Placed in preferred: ${losersMatchKey} ${preferredSlotKey}`);
+                    } else {
+                        const oppositeSlot = preferredSlotKey === 'team1' ? 'team2' : 'team1';
+                        if (!tournamentData.losersMatches[losersMatchKey][oppositeSlot]) {
+                            tournamentData.losersMatches[losersMatchKey][oppositeSlot] = teamId;
+                            tournamentData.losersMatches[losersMatchKey][`${oppositeSlot}Source`] = 'l';
+                            console.log(`   ✓ Placed in opposite slot: ${losersMatchKey} ${oppositeSlot}`);
+                        } else {
+                            // overwrite as last resort
+                            tournamentData.losersMatches[losersMatchKey][preferredSlotKey] = teamId;
+                            tournamentData.losersMatches[losersMatchKey][`${preferredSlotKey}Source`] = 'l';
+                            console.log(`   ⚠️ OVERWRITE: ${losersMatchKey} ${preferredSlotKey} (was ${tournamentData.losersMatches[losersMatchKey][preferredSlotKey]})`);
+                        }
+                    }
                 } else {
-                    tournamentData.losersMatches[losersMatchKey].team2 = teamId;
+                    console.log(`   ✓ Smart placement succeeded`);
                 }
             }
             
@@ -984,6 +1096,126 @@ function advanceWinner(matchKey, teamId, slot) {
     showSaveIndicator('Winner advanced!', 'success');
 }
 
+// Helper: try to place a loser into the first available slot within a losers round
+function placeInLosersRound(losersRound, preferredMatch, teamId, source) {
+    if (!tournamentData.losersMatches) tournamentData.losersMatches = {};
+    const numTeams = tournamentData.numTeams;
+    const initialMatches = Math.max(1, numTeams / 4);
+
+    // Determine number of matches in this losers round using the same formula as createLosersRound
+    const matchesInRound = Math.max(1, Math.floor(initialMatches / Math.pow(2, Math.floor(losersRound / 2))));
+
+    const tryMatchKey = (m) => `l${losersRound}-${m}`;
+
+    // Preferred match first, then scan others
+    const candidates = [];
+    if (preferredMatch >= 0 && preferredMatch < matchesInRound) candidates.push(preferredMatch);
+    for (let i = 0; i < matchesInRound; i++) {
+        if (i !== preferredMatch) candidates.push(i);
+    }
+
+    // Priority placement rules:
+    // 1) Prefer to place into a match where the other slot is occupied by the opposite source (pair w with l)
+    // 2) Then prefer empty-empty matches
+    // 3) Then prefer matches with an empty slot (regardless of source)
+    // 4) Fallback: try preferred and other matches, filling team2 then team1
+
+    // First pass: opposite-source pairing
+    for (const m of candidates) {
+        const key = tryMatchKey(m);
+        if (!tournamentData.losersMatches[key]) tournamentData.losersMatches[key] = {};
+        const s1 = tournamentData.losersMatches[key].team1Source;
+        const s2 = tournamentData.losersMatches[key].team2Source;
+        const t1 = tournamentData.losersMatches[key].team1;
+        const t2 = tournamentData.losersMatches[key].team2;
+
+    // Note: do not block placement if team is already present in losers (winners advancing from losers
+    // will still be present in their current match but must also be placed into the next round).
+
+        if (source === 'w') {
+            // look for a match where a loser-winner from losers ('l') is present and opposite slot is empty
+            if ((s1 === 'l' && !t2)) {
+                tournamentData.losersMatches[key].team2 = teamId;
+                tournamentData.losersMatches[key].team2Source = 'w';
+                return true;
+            }
+            if ((s2 === 'l' && !t1)) {
+                tournamentData.losersMatches[key].team1 = teamId;
+                tournamentData.losersMatches[key].team1Source = 'w';
+                return true;
+            }
+        } else if (source === 'l') {
+            // placing a winner from losers bracket; prefer to pair with a 'w'
+            if ((s1 === 'w' && !t2)) {
+                tournamentData.losersMatches[key].team2 = teamId;
+                tournamentData.losersMatches[key].team2Source = 'l';
+                return true;
+            }
+            if ((s2 === 'w' && !t1)) {
+                tournamentData.losersMatches[key].team1 = teamId;
+                tournamentData.losersMatches[key].team1Source = 'l';
+                return true;
+            }
+        }
+    }
+
+    // Second pass: empty-empty matches
+    for (const m of candidates) {
+        const key = tryMatchKey(m);
+        const t1 = tournamentData.losersMatches[key].team1;
+        const t2 = tournamentData.losersMatches[key].team2;
+        if (!t1 && !t2) {
+            // put into team1 by default
+            tournamentData.losersMatches[key].team1 = teamId;
+            tournamentData.losersMatches[key].team1Source = source;
+            return true;
+        }
+    }
+
+    // Third pass: any match with an empty slot
+    for (const m of candidates) {
+        const key = tryMatchKey(m);
+        const t1 = tournamentData.losersMatches[key].team1;
+        const t2 = tournamentData.losersMatches[key].team2;
+        if (!t1) {
+            tournamentData.losersMatches[key].team1 = teamId;
+            tournamentData.losersMatches[key].team1Source = source;
+            return true;
+        }
+        if (!t2) {
+            tournamentData.losersMatches[key].team2 = teamId;
+            tournamentData.losersMatches[key].team2Source = source;
+            return true;
+        }
+    }
+
+    // Fallback: nothing available
+    return false;
+}
+
+// Helper: compute matches in a losers round
+function getLosersMatchesCount(roundNum, numTeams) {
+    const initialMatches = Math.max(1, numTeams / 4);
+    const matches = Math.max(1, Math.floor(initialMatches / Math.pow(2, Math.floor(roundNum / 2))));
+    return matches;
+}
+
+// Helper: check if a team is already present in any losers match
+function isTeamInLosers(teamId) {
+    if (!tournamentData.losersMatches) return false;
+    for (const key in tournamentData.losersMatches) {
+        const m = tournamentData.losersMatches[key];
+        if (m && (m.team1 === teamId || m.team2 === teamId)) return true;
+    }
+    return false;
+}
+
+// Helper: find team object by its stable id
+function getTeamById(id) {
+    if (!tournamentData.teams) return null;
+    return tournamentData.teams.find(t => t.id === id) || null;
+}
+
 // Save all changes
 async function saveAllChanges() {
     // Update tournament info from form fields
@@ -1022,4 +1254,234 @@ function showSaveIndicator(message, type) {
     setTimeout(() => {
         indicator.className = 'save-indicator';
     }, 3000);
+}
+
+// Validate bracket - comprehensive check of all match routing
+function validateBracket() {
+    const results = [];
+    const errors = [];
+    const warnings = [];
+    
+    results.push('<h5>🔍 Bracket Validation Report</h5>');
+    results.push(`<p><strong>Bracket Type:</strong> ${tournamentData.bracketType}</p>`);
+    results.push(`<p><strong>Teams:</strong> ${tournamentData.numTeams}</p>`);
+    results.push('<hr>');
+    
+    if (tournamentData.bracketType === 'double') {
+        // Validate double elimination bracket
+        const numTeams = tournamentData.numTeams;
+        const totalWinnersRounds = Math.log2(numTeams);
+        const totalLosersRounds = (totalWinnersRounds - 1) * 2;
+        
+        results.push('<h6>Winners Bracket Routing:</h6>');
+        
+        // Check winners bracket advancement
+        for (let round = 0; round < totalWinnersRounds; round++) {
+            const matchesInRound = numTeams / Math.pow(2, round + 1);
+            results.push(`<div class="ms-3"><strong>Winners Round ${round}:</strong> (${matchesInRound} matches)</div>`);
+            
+            for (let match = 0; match < matchesInRound; match++) {
+                const matchKey = `w${round}-${match}`;
+                const matchData = tournamentData.matches[matchKey];
+                
+                if (!matchData || (!matchData.team1 && !matchData.team2)) {
+                    warnings.push(`⚠️ ${matchKey}: No teams assigned`);
+                    continue;
+                }
+                
+                if (matchData.winner) {
+                    const winnerTeam = getTeamById(matchData.winner);
+                    const winnerName = winnerTeam ? winnerTeam.name : `Team ${matchData.winner}`;
+                    
+                    // Check where winner should go
+                    if (round === totalWinnersRounds - 1) {
+                        // Should go to Grand Finals team1
+                        const finalMatch = tournamentData.matches['final'];
+                        if (finalMatch && finalMatch.team1 === matchData.winner) {
+                            results.push(`<div class="ms-4 text-success">✓ ${matchKey} winner (${winnerName}) → Grand Finals team1</div>`);
+                        } else {
+                            errors.push(`❌ ${matchKey} winner (${winnerName}) should be in Grand Finals team1 but isn't`);
+                        }
+                    } else {
+                        // Should advance to next winners round
+                        const nextRound = round + 1;
+                        const nextMatch = Math.floor(match / 2);
+                        const nextSlot = match % 2 === 0 ? 'team1' : 'team2';
+                        const nextKey = `w${nextRound}-${nextMatch}`;
+                        const nextData = tournamentData.matches[nextKey];
+                        
+                        if (nextData && nextData[nextSlot] === matchData.winner) {
+                            results.push(`<div class="ms-4 text-success">✓ ${matchKey} winner (${winnerName}) → ${nextKey} ${nextSlot}</div>`);
+                        } else {
+                            errors.push(`❌ ${matchKey} winner (${winnerName}) should be in ${nextKey} ${nextSlot} but is in: ${nextData ? nextData[nextSlot] : 'nothing'}`);
+                        }
+                    }
+                    
+                    // Check where loser should go
+                    const loserId = matchData.team1 === matchData.winner ? matchData.team2 : matchData.team1;
+                    if (loserId !== null && loserId !== undefined) {
+                        const loserTeam = getTeamById(loserId);
+                        const loserName = loserTeam ? loserTeam.name : `Team ${loserId}`;
+                        
+                        // Calculate expected losers position
+                        const losersRound = round === 0 ? 0 : (round * 2 - 1);
+                        const losersMatch = round === 0 ? Math.floor(match / 2) : match;
+                        const losersKey = `l${losersRound}-${losersMatch}`;
+                        
+                        // Check if loser is in losers bracket
+                        let foundInLosers = false;
+                        for (const lKey in tournamentData.losersMatches) {
+                            const lMatch = tournamentData.losersMatches[lKey];
+                            if (lMatch.team1 === loserId || lMatch.team2 === loserId) {
+                                if (lKey === losersKey) {
+                                    results.push(`<div class="ms-4 text-info">→ ${matchKey} loser (${loserName}) → ${lKey} ✓</div>`);
+                                } else {
+                                    warnings.push(`⚠️ ${matchKey} loser (${loserName}) expected in ${losersKey} but found in ${lKey}`);
+                                }
+                                foundInLosers = true;
+                                break;
+                            }
+                        }
+                        if (!foundInLosers) {
+                            warnings.push(`⚠️ ${matchKey} loser (${loserName}) not found in losers bracket`);
+                        }
+                    }
+                }
+            }
+        }
+        
+        results.push('<hr>');
+        results.push('<h6>Losers Bracket Routing:</h6>');
+        
+        // Check losers bracket advancement
+        for (let round = 0; round < totalLosersRounds; round++) {
+            const matchesInRound = getLosersMatchesCount(round, numTeams);
+            results.push(`<div class="ms-3"><strong>Losers Round ${round}:</strong> (${matchesInRound} matches)</div>`);
+            
+            for (let match = 0; match < matchesInRound; match++) {
+                const matchKey = `l${round}-${match}`;
+                const matchData = tournamentData.losersMatches ? tournamentData.losersMatches[matchKey] : null;
+                
+                if (!matchData || (!matchData.team1 && !matchData.team2)) {
+                    continue; // Skip empty matches
+                }
+                
+                // Show match composition
+                const t1 = matchData.team1 ? getTeamById(matchData.team1) : null;
+                const t2 = matchData.team2 ? getTeamById(matchData.team2) : null;
+                const t1Name = t1 ? t1.name : 'empty';
+                const t2Name = t2 ? t2.name : 'empty';
+                const t1Src = matchData.team1Source || '?';
+                const t2Src = matchData.team2Source || '?';
+                
+                results.push(`<div class="ms-4">${matchKey}: [${t1Name} (${t1Src})] vs [${t2Name} (${t2Src})]</div>`);
+                
+                if (matchData.winner) {
+                    const winnerTeam = getTeamById(matchData.winner);
+                    const winnerName = winnerTeam ? winnerTeam.name : `Team ${matchData.winner}`;
+                    
+                    // Check where winner should go
+                    if (round === totalLosersRounds - 1) {
+                        // Should go to Grand Finals team2
+                        const finalMatch = tournamentData.matches['final'];
+                        if (finalMatch && finalMatch.team2 === matchData.winner) {
+                            results.push(`<div class="ms-5 text-success">✓ ${matchKey} winner (${winnerName}) → Grand Finals team2</div>`);
+                        } else {
+                            errors.push(`❌ ${matchKey} winner (${winnerName}) should be in Grand Finals team2 but isn't`);
+                        }
+                    } else {
+                        // Should advance to next losers round
+                        const nextRound = round + 1;
+                        const matchesInThis = getLosersMatchesCount(round, numTeams);
+                        const matchesInNext = getLosersMatchesCount(nextRound, numTeams);
+                        
+                        // Expected mapping based on current logic
+                        const expectedMatch = (matchesInNext === matchesInThis) ? match : Math.floor(match / 2);
+                        const expectedSlot = (matchesInNext === matchesInThis) ? 'team1' : ((match % 2 === 0) ? 'team1' : 'team2');
+                        const expectedKey = `l${nextRound}-${expectedMatch}`;
+                        
+                        // Check if winner is in expected position
+                        const nextData = tournamentData.losersMatches ? tournamentData.losersMatches[expectedKey] : null;
+                        
+                        let foundCorrectly = false;
+                        if (nextData) {
+                            if (nextData[expectedSlot] === matchData.winner) {
+                                results.push(`<div class="ms-5 text-success">✓ ${matchKey} winner (${winnerName}) → ${expectedKey} ${expectedSlot}</div>`);
+                                foundCorrectly = true;
+                            } else if (nextData.team1 === matchData.winner || nextData.team2 === matchData.winner) {
+                                const actualSlot = nextData.team1 === matchData.winner ? 'team1' : 'team2';
+                                warnings.push(`⚠️ ${matchKey} winner (${winnerName}) expected in ${expectedKey} ${expectedSlot} but found in ${actualSlot}`);
+                                foundCorrectly = true;
+                            }
+                        }
+                        
+                        if (!foundCorrectly) {
+                            // Search for winner in other losers matches
+                            let foundElsewhere = false;
+                            for (const lKey in tournamentData.losersMatches) {
+                                const lMatch = tournamentData.losersMatches[lKey];
+                                if (lMatch.team1 === matchData.winner || lMatch.team2 === matchData.winner) {
+                                    const slot = lMatch.team1 === matchData.winner ? 'team1' : 'team2';
+                                    errors.push(`❌ ${matchKey} winner (${winnerName}) should be in ${expectedKey} ${expectedSlot} but found in ${lKey} ${slot}`);
+                                    foundElsewhere = true;
+                                    break;
+                                }
+                            }
+                            if (!foundElsewhere) {
+                                warnings.push(`⚠️ ${matchKey} winner (${winnerName}) not found in next round (expected ${expectedKey} ${expectedSlot})`);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Check Grand Finals
+        results.push('<hr>');
+        results.push('<h6>Grand Finals:</h6>');
+        const finalMatch = tournamentData.matches['final'];
+        if (finalMatch) {
+            const t1 = finalMatch.team1 ? getTeamById(finalMatch.team1) : null;
+            const t2 = finalMatch.team2 ? getTeamById(finalMatch.team2) : null;
+            results.push(`<div class="ms-3">Team 1 (from winners): ${t1 ? t1.name : 'empty'}</div>`);
+            results.push(`<div class="ms-3">Team 2 (from losers): ${t2 ? t2.name : 'empty'}</div>`);
+            if (finalMatch.winner) {
+                const winner = getTeamById(finalMatch.winner);
+                results.push(`<div class="ms-3 text-success">Champion: ${winner ? winner.name : 'Unknown'}</div>`);
+            }
+        } else {
+            warnings.push('⚠️ Grand Finals match not initialized');
+        }
+        
+    } else {
+        // Validate single elimination
+        results.push('<h6>Single Elimination Validation:</h6>');
+        results.push('<p class="ms-3">Basic single-elimination validation (winners advance floor(match/2), slot match%2)</p>');
+        // Add single-elim validation if needed
+    }
+    
+    // Display results
+    results.push('<hr>');
+    if (errors.length > 0) {
+        results.push('<h6 class="text-danger">❌ Errors Found:</h6>');
+        results.push('<ul class="text-danger">');
+        errors.forEach(err => results.push(`<li>${err}</li>`));
+        results.push('</ul>');
+    }
+    
+    if (warnings.length > 0) {
+        results.push('<h6 class="text-warning">⚠️ Warnings:</h6>');
+        results.push('<ul class="text-warning">');
+        warnings.forEach(warn => results.push(`<li>${warn}</li>`));
+        results.push('</ul>');
+    }
+    
+    if (errors.length === 0 && warnings.length === 0) {
+        results.push('<div class="alert alert-success"><h6 class="mb-0">✅ All checks passed! Bracket routing looks correct.</h6></div>');
+    }
+    
+    // Show modal
+    document.getElementById('validationResults').innerHTML = results.join('');
+    const validationModal = new bootstrap.Modal(document.getElementById('validationModal'));
+    validationModal.show();
 }

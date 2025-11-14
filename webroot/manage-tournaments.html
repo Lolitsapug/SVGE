@@ -244,10 +244,11 @@
 	<script src="assets/js/api-helper.js"></script>
 	<script>
 		// Check authentication
-		function checkAuth() {
+		async function checkAuth() {
 			const adminAuth = sessionStorage.getItem('adminAuth');
 			const authTime = sessionStorage.getItem('authTime');
 			
+			// Quick client-side check
 			if (!adminAuth || adminAuth !== 'authenticated') {
 				window.location.href = 'admin-login.html';
 				return;
@@ -258,19 +259,23 @@
 				const elapsed = Date.now() - parseInt(authTime);
 				const twoHours = 2 * 60 * 60 * 1000;
 				if (elapsed > twoHours) {
-					sessionStorage.removeItem('adminAuth');
-					sessionStorage.removeItem('authTime');
+					sessionStorage.clear();
 					window.location.href = 'admin-login.html';
 					return;
 				}
+			}
+			
+			// Verify with server (server has the authoritative session)
+			const serverAuth = await TournamentAPI.checkAuth();
+			if (!serverAuth) {
+				sessionStorage.clear();
+				window.location.href = 'admin-login.html';
 			}
 		}
 
 		// Logout
 		function logout() {
-			sessionStorage.removeItem('adminAuth');
-			sessionStorage.removeItem('authTime');
-			window.location.href = 'admin-login.html';
+			TournamentAPI.logout();
 		}
 
 		// Load all tournaments

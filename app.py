@@ -1,11 +1,23 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, session
 from flask_cors import CORS
 import json
 import os
-from datetime import datetime
+import secrets
+from datetime import datetime, timedelta
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__, static_folder='webroot', static_url_path='')
-CORS(app)  # Enable CORS for all routes
+CORS(app, supports_credentials=True)  # Enable CORS with credentials support
+
+# Secret key for sessions (change this in production!)
+app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
+
+# Admin password hash (change password via environment variable)
+# Default password: "svgeadmin2025"
+ADMIN_PASSWORD_HASH = os.environ.get(
+    'ADMIN_PASSWORD_HASH',
+    generate_password_hash('svgeadmin2025')
+)
 
 # Path to store tournament data
 DATA_FILE = 'tournaments_data.json'
@@ -42,6 +54,51 @@ def index():
 def serve_static(path):
     return send_from_directory('webroot', path)
 
+# Authentication helper
+def require_auth():
+    """Check if user is authenticated"""
+    if not session.get('admin_authenticated'):
+        return jsonify({'error': 'Authentication required'}), 401
+    
+    # Check if session has expired (2 hours)
+    auth_time = session.get('auth_time')
+    if not auth_time or (datetime.now() - datetime.fromisoformat(auth_time)) > timedelta(hours=2):
+        session.clear()
+        return jsonify({'error': 'Session expired'}), 401
+    
+    return None
+
+# Authentication Routes
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    """Authenticate admin user"""
+    data = request.json
+    password = data.get('password', '')
+    
+    if check_password_hash(ADMIN_PASSWORD_HASH, password):
+        session['admin_authenticated'] = True
+        session['auth_time'] = datetime.now().isoformat()
+        session.permanent = True
+        app.permanent_session_lifetime = timedelta(hours=2)
+        return jsonify({'success': True, 'message': 'Authentication successful'})
+    else:
+        return jsonify({'success': False, 'message': 'Invalid password'}), 401
+
+@app.route('/api/auth/logout', methods=['POST'])
+def logout():
+    """Logout admin user"""
+    session.clear()
+    return jsonify({'success': True, 'message': 'Logged out successfully'})
+
+@app.route('/api/auth/check', methods=['GET'])
+def check_auth():
+    """Check if user is authenticated"""
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+    return jsonify({'authenticated': True})
+
 # API Routes
 
 @app.route('/api/tournaments', methods=['GET'])
@@ -71,6 +128,11 @@ def get_tournament(tournament_id):
 @app.route('/api/tournaments', methods=['POST'])
 def create_tournament():
     """Create a new tournament"""
+    # Require authentication for creating tournaments
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+    
     data = request.json
     tournament_id = data.get('id')
     
@@ -103,6 +165,11 @@ def create_tournament():
 @app.route('/api/tournaments/<tournament_id>', methods=['PUT'])
 def update_tournament(tournament_id):
     """Update an existing tournament"""
+    # Require authentication for updating tournaments
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+    
     tournaments = load_tournaments()
     
     for i, tournament in enumerate(tournaments):
@@ -119,6 +186,11 @@ def update_tournament(tournament_id):
 @app.route('/api/tournaments/<tournament_id>', methods=['DELETE'])
 def delete_tournament(tournament_id):
     """Delete a tournament"""
+    # Require authentication for deleting tournaments
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+    
     tournaments = load_tournaments()
     
     for i, tournament in enumerate(tournaments):

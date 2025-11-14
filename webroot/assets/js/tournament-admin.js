@@ -45,21 +45,28 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 // Check if user is authenticated
-function checkAuth() {
+async function checkAuth() {
+    // First check client-side flag for quick check
     const isAuth = sessionStorage.getItem('adminAuth');
     const authTime = sessionStorage.getItem('authTime');
     
-    // Check if auth exists and is less than 2 hours old
+    // Quick client-side check
     if (!isAuth || !authTime || (Date.now() - parseInt(authTime)) > 7200000) {
+        window.location.href = 'admin-login.html';
+        return;
+    }
+    
+    // Verify with server (server has the authoritative session)
+    const serverAuth = await TournamentAPI.checkAuth();
+    if (!serverAuth) {
+        sessionStorage.clear();
         window.location.href = 'admin-login.html';
     }
 }
 
 // Logout function
 function logout() {
-    sessionStorage.removeItem('adminAuth');
-    sessionStorage.removeItem('authTime');
-    window.location.href = 'admin-login.html';
+    TournamentAPI.logout();
 }
 
 // Load tournament data

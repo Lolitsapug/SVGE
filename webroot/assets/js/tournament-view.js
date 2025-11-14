@@ -276,15 +276,23 @@ function createMatch(roundNum, matchNum, numTeams) {
     return createMatchWithKey(matchKey, roundNum, matchNum);
 }
 
+// Helper: Get team by ID property
+function getTeamById(teamId) {
+    if (teamId === null || teamId === undefined || !tournamentData.teams) {
+        return null;
+    }
+    return tournamentData.teams.find(t => t.id === teamId);
+}
+
 // Create a team slot
-function createTeamSlot(teamIndex) {
+function createTeamSlot(teamId) {
     const teamDiv = document.createElement('div');
     teamDiv.className = 'team';
     
-    if (teamIndex !== null && tournamentData.teams[teamIndex]) {
-        const team = tournamentData.teams[teamIndex];
+    const team = getTeamById(teamId);
+    if (teamId !== null && team) {
         teamDiv.textContent = team.name;
-        // Use the team's actual ID property, not the array index
+        // Use the team's actual ID property
         teamDiv.setAttribute('data-team-id', team.id);
         
         if (team.eliminated) {
@@ -293,7 +301,7 @@ function createTeamSlot(teamIndex) {
         
         // Make clickable to show team info
         teamDiv.style.cursor = 'pointer';
-        teamDiv.onclick = () => showTeamInfo(teamIndex);
+        teamDiv.onclick = () => showTeamInfo(teamId);
     } else {
         teamDiv.textContent = 'TBD';
         teamDiv.classList.add('empty');
@@ -304,8 +312,8 @@ function createTeamSlot(teamIndex) {
 
 // Update team slot with team data
 function updateTeamSlot(teamDiv, teamId) {
-    if (teamId !== null && tournamentData.teams[teamId]) {
-        const team = tournamentData.teams[teamId];
+    const team = getTeamById(teamId);
+    if (teamId !== null && team) {
         teamDiv.textContent = team.name;
         teamDiv.setAttribute('data-team-id', teamId);
         teamDiv.classList.remove('empty');
@@ -316,7 +324,8 @@ function updateTeamSlot(teamDiv, teamId) {
         
         // Make clickable
         teamDiv.style.cursor = 'pointer';
-        teamDiv.onclick = () => showTeamInfo(teamId);
+        const teamIndex = tournamentData.teams.findIndex(t => t.id === teamId);
+        teamDiv.onclick = () => showTeamInfo(teamIndex >= 0 ? teamIndex : teamId);
     }
 }
 

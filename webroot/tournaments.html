@@ -169,19 +169,10 @@
 			lastScrollTop = scrollTop;
 		});
 
-		// Load tournaments dynamically
-		document.addEventListener('DOMContentLoaded', async function() {
-			// Initialize example tournament if needed
-			try {
-				await TournamentAPI.initExampleTournament();
-			} catch (e) {
-				console.log('Example tournament already exists or error:', e);
-			}
-			
-			await loadTournaments();
-		});
-
-		async function loadTournaments() {
+	// Load tournaments dynamically
+	document.addEventListener('DOMContentLoaded', async function() {
+		await loadTournaments();
+	});		async function loadTournaments() {
 			const container = document.getElementById('tournamentCardsContainer');
 			
 			try {

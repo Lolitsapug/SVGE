@@ -390,14 +390,6 @@
 		// Initialize
 		document.addEventListener('DOMContentLoaded', async function() {
 			checkAuth();
-			
-			// Initialize example tournament if needed
-			try {
-				await TournamentAPI.initExampleTournament();
-			} catch (e) {
-				console.log('Example tournament initialization:', e);
-			}
-			
 			await loadTournaments();
 		});
 	</script>

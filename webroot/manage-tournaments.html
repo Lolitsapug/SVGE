@@ -186,8 +186,15 @@
 	<!-- Admin Header -->
 	<header class="admin-header">
 		<div class="container">
-			<h1 class="display-5">All Tournaments</h1>
-			<p class="lead">Create and manage all tournaments</p>
+			<div class="d-flex justify-content-between align-items-center">
+				<div>
+					<h1 class="display-5">All Tournaments</h1>
+					<p class="lead mb-0">Create and manage all tournaments</p>
+				</div>
+				<button class="btn btn-light btn-lg" onclick="downloadBackup()" title="Download tournaments_data.json backup">
+					<i class="fa fa-download"></i> Backup Data
+				</button>
+			</div>
 		</div>
 	</header>
 
@@ -235,7 +242,7 @@
 	<!-- Footer -->
 	<footer>
 		<div class="container">
-			<p class="mb-0">&copy; 2025 SVGE Esports Society. All rights reserved.</p>
+			<p class="mb-0">&copy; 2025 SVGE Society. All rights reserved.</p>
 		</div>
 	</footer>
 
@@ -265,15 +272,19 @@
 				}
 			}
 			
-			// Verify with server (server has the authoritative session)
+		// Verify with server (server has the authoritative session)
+		try {
 			const serverAuth = await TournamentAPI.checkAuth();
 			if (!serverAuth) {
 				sessionStorage.clear();
+				alert('Your session has expired. Please log in again.');
 				window.location.href = 'admin-login.html';
 			}
+		} catch (e) {
+			// If we can't check auth (e.g., server down), still allow page load
+			console.warn('Could not verify authentication:', e);
 		}
-
-		// Logout
+	}		// Logout
 		function logout() {
 			TournamentAPI.logout();
 		}
@@ -371,23 +382,62 @@
 			window.location.href = `tournament-admin.html?id=${id}`;
 		}
 
-		// Delete tournament
-		async function deleteTournament(id) {
-			if (!confirm(`Are you sure you want to delete tournament "${id}"? This action cannot be undone.`)) {
-				return;
-			}
-			
-			try {
-				await TournamentAPI.deleteTournament(id);
-				// Reload list
-				await loadTournaments();
-			} catch (e) {
-				console.error('Error deleting tournament:', e);
+	// Delete tournament
+	async function deleteTournament(id) {
+		if (!confirm(`Are you sure you want to delete tournament "${id}"? This action cannot be undone.`)) {
+			return;
+		}
+		
+		try {
+			await TournamentAPI.deleteTournament(id);
+			// Reload list
+			await loadTournaments();
+		} catch (e) {
+			console.error('Error deleting tournament:', e);
+			// Don't show alert for authentication errors - user will be redirected
+			if (!e.message.includes('Authentication required')) {
 				alert('Error deleting tournament: ' + e.message);
 			}
 		}
+	}
 
-		// Initialize
+	// Download backup of all tournament data
+	async function downloadBackup() {
+		try {
+			const tournaments = await TournamentAPI.getAllTournaments();
+			
+			// Fetch full data for each tournament
+			const fullTournaments = [];
+			for (const tournament of tournaments) {
+				const fullData = await TournamentAPI.getTournament(tournament.id);
+				fullTournaments.push(fullData);
+			}
+			
+			// Create JSON blob
+			const jsonStr = JSON.stringify(fullTournaments, null, 2);
+			const blob = new Blob([jsonStr], { type: 'application/json' });
+			
+			// Create download link
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			
+			// Generate filename with timestamp
+			const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
+			a.download = `tournaments_data_backup_${timestamp}.json`;
+			
+			// Trigger download
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+			
+			console.log('Backup downloaded successfully');
+		} catch (e) {
+			console.error('Error downloading backup:', e);
+			alert('Error creating backup: ' + e.message);
+		}
+	}		// Initialize
 		document.addEventListener('DOMContentLoaded', async function() {
 			checkAuth();
 			await loadTournaments();

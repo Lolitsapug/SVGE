@@ -157,6 +157,7 @@ function createRound(roundNum, totalRounds, numTeams, bracketType = 'single') {
 function createLosersRound(roundNum, numTeams) {
     const roundDiv = document.createElement('div');
     roundDiv.className = 'bracket-round';
+    roundDiv.setAttribute('data-losers-round', roundNum);
     
     const title = document.createElement('div');
     title.className = 'round-title';

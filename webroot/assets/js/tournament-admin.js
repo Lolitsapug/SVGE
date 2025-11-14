@@ -57,10 +57,16 @@ async function checkAuth() {
     }
     
     // Verify with server (server has the authoritative session)
-    const serverAuth = await TournamentAPI.checkAuth();
-    if (!serverAuth) {
-        sessionStorage.clear();
-        window.location.href = 'admin-login.html';
+    try {
+        const serverAuth = await TournamentAPI.checkAuth();
+        if (!serverAuth) {
+            sessionStorage.clear();
+            alert('Your session has expired. Please log in again.');
+            window.location.href = 'admin-login.html';
+        }
+    } catch (e) {
+        // If we can't check auth (e.g., server down), still allow page load
+        console.warn('Could not verify authentication:', e);
     }
 }
 
@@ -546,6 +552,7 @@ function generateBracket() {
 function createRound(roundNum, totalRounds, numTeams, bracketType = 'single') {
     const roundDiv = document.createElement('div');
     roundDiv.className = 'bracket-round';
+    roundDiv.setAttribute('data-round', roundNum);
     
     const title = document.createElement('div');
     title.className = 'round-title';
@@ -582,6 +589,7 @@ function createRound(roundNum, totalRounds, numTeams, bracketType = 'single') {
 function createLosersRound(roundNum, numTeams) {
     const roundDiv = document.createElement('div');
     roundDiv.className = 'bracket-round';
+    roundDiv.setAttribute('data-losers-round', roundNum);
     
     const title = document.createElement('div');
     title.className = 'round-title';

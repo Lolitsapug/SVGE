@@ -129,8 +129,89 @@ body#page-top .masthead {
 .bracket-round {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     min-width: 250px;
+    position: relative;
+}
+
+/* Spacing for bracket tree layout */
+.bracket-round .match {
+    position: relative;
+}
+
+/* First round - base spacing */
+.bracket-round[data-round="0"] .match {
+    margin: 10px 0;
+}
+
+/* Second round - double spacing (2 matches → 1) */
+.bracket-round[data-round="1"] .match {
+    margin: 45px 0;
+}
+
+/* Third round - quadruple spacing (4 matches → 1) */
+.bracket-round[data-round="2"] .match {
+    margin: 115px 0;
+}
+
+/* Fourth round - 8x spacing (8 matches → 1) */
+.bracket-round[data-round="3"] .match {
+    margin: 255px 0;
+}
+
+/* Losers bracket spacing - adjust based on round structure */
+/* For 8-team bracket (3 losers rounds) */
+.bracket-round[data-losers-round="0"] .match {
+    margin: 10px 0;
+}
+
+.bracket-round[data-losers-round="1"] .match {
+    margin: 45px 0;
+}
+
+.bracket-round[data-losers-round="2"] .match {
+    margin: 115px 0;
+}
+
+/* For 16-team bracket (6 losers rounds) - special structure */
+/* L0: 4 matches from W0 losers - tight spacing */
+.bracket-round[data-losers-round="0"] .match {
+    margin: 10px 0;
+}
+
+/* L1: 4 matches (L0 winners meet W1 losers) - tight spacing, same count as L0 */
+.bracket-round[data-losers-round="1"] .match {
+    margin: 10px 0;
+}
+
+/* L2: 4 matches (L1 winners only) - tight spacing, same count as L1 */
+.bracket-round[data-losers-round="2"] .match {
+    margin: 10px 0;
+}
+
+/* L3: 2 matches (L2 winners meet W2 losers) - double spacing (4→2) */
+.bracket-round[data-losers-round="3"] .match {
+    margin: 45px 0;
+}
+
+/* L4: 2 matches (L3 winners only) - maintain spacing, same count as L3 */
+.bracket-round[data-losers-round="4"] .match {
+    margin: 45px 0;
+}
+
+/* L5: 1 match (L4 winners meet W3 losers) - quadruple spacing (2→1) */
+.bracket-round[data-losers-round="5"] .match {
+    margin: 115px 0;
+}
+
+/* L6: 1 match (losers finals) - maintain spacing */
+.bracket-round[data-losers-round="6"] .match {
+    margin: 115px 0;
+}
+
+/* For 32-team bracket (8 losers rounds) */
+.bracket-round[data-losers-round="7"] .match {
+    margin: 255px 0;
 }
 
 .round-title {
@@ -275,12 +356,17 @@ body#page-top .masthead {
 .bracket-round.championship .match {
     border: 3px solid #b89551;
     background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
-    margin-top: 0;
+    margin: 0 !important;
 }
 
 .bracket-round.championship .round-title {
     color: #b89551;
     font-size: 1.5rem;
+}
+
+/* Grand Finals in double elimination */
+.bracket-round[data-round="final"] .match {
+    margin: 0 !important;
 }
 
 /* Modal Styling */
@@ -324,11 +410,89 @@ body#page-top .masthead {
     .round-title {
         font-size: 1.1rem;
     }
+
+    /* Reduce spacing on mobile for better fit */
+    .bracket-round[data-round] .match {
+        margin: 20px 0 !important;
+    }
+
+    .bracket-round[data-losers-round] .match {
+        margin: 20px 0 !important;
+    }
+
+    /* Hide connection lines on mobile */
+    .bracket-round .match::after,
+    .bracket-round .match::before {
+        display: none;
+    }
 }
 
-/* Connection Lines (optional enhancement) */
+/* Connection Lines - shows bracket flow */
 .bracket-round {
     position: relative;
+}
+
+/* Add connecting lines from matches to next round */
+.bracket-round .match::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: #dee2e6;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-1px);
+    z-index: 0;
+}
+
+/* Remove connection line from championship/final rounds */
+.bracket-round.championship .match::after,
+.bracket-round[data-round="final"] .match::after {
+    display: none;
+}
+
+/* Add vertical lines connecting pairs of matches */
+.bracket-round .match:nth-child(odd):not(:last-child)::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    background: #dee2e6;
+    right: -20px;
+    top: 50%;
+    z-index: 0;
+}
+
+/* Adjust vertical line height based on round for proper bracket tree */
+.bracket-round[data-round="0"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 20px);
+}
+
+.bracket-round[data-round="1"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 90px);
+}
+
+.bracket-round[data-round="2"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 230px);
+}
+
+/* Losers bracket connection lines - adjust for structure */
+/* L0, L1, L2 have same count (4 matches each) - tight connections */
+.bracket-round[data-losers-round="0"] .match:nth-child(odd):not(:last-child)::before,
+.bracket-round[data-losers-round="1"] .match:nth-child(odd):not(:last-child)::before,
+.bracket-round[data-losers-round="2"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 20px);
+}
+
+/* L3, L4 converge from 4→2 matches */
+.bracket-round[data-losers-round="3"] .match:nth-child(odd):not(:last-child)::before,
+.bracket-round[data-losers-round="4"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 90px);
+}
+
+/* L5, L6 converge from 2→1 match */
+.bracket-round[data-losers-round="5"] .match:nth-child(odd):not(:last-child)::before,
+.bracket-round[data-losers-round="6"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 230px);
 }
 
 /* Footer Styles */

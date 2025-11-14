@@ -1,444 +1,254 @@
 [
   {
-    "id": "example-tournament",
-    "numTeams": 4,
-    "teams": [
-      {
-        "captain": "",
-        "eliminated": false,
-        "gameId": "",
-        "id": 0,
-        "name": "Team 1"
+    "bracketType": "double",
+    "date": "November 9 - November 9, 2025",
+    "description": "Join us for an exciting tournament! Battle it out with other teams to claim victory.",
+    "id": "16ppltest",
+    "image": "assets/img/bracket.png",
+    "losersMatches": {
+      "l0-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 14,
+        "team1Source": "w",
+        "team2": 6,
+        "team2Source": "w",
+        "winner": 14
       },
-      {
-        "captain": "",
-        "eliminated": false,
-        "gameId": "",
-        "id": 1,
-        "name": "Team 2"
+      "l0-1": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 0,
+        "team1Source": "w",
+        "team2": 1,
+        "team2Source": "w",
+        "winner": 0
       },
-      {
-        "captain": "",
-        "eliminated": true,
-        "gameId": "",
-        "id": 2,
-        "name": "Team 3"
+      "l0-2": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 12,
+        "team1Source": "w",
+        "team2": 13,
+        "team2Source": "w",
+        "winner": 12
       },
-      {
-        "captain": "",
-        "eliminated": true,
-        "gameId": "",
-        "id": 3,
-        "name": "Team 4"
+      "l0-3": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 5,
+        "team1Source": "w",
+        "team2": 11,
+        "team2Source": "w",
+        "winner": 5
+      },
+      "l1-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 14,
+        "team1Source": "l",
+        "team2": 8,
+        "team2Source": "w",
+        "winner": 14
+      },
+      "l1-1": {
+        "score1": 2,
+        "score2": 1,
+        "team1": 0,
+        "team1Source": "l",
+        "team2": 15,
+        "team2Source": "w",
+        "winner": 0
+      },
+      "l1-2": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 12,
+        "team1Source": "l",
+        "team2": 7,
+        "team2Source": "w",
+        "winner": 12
+      },
+      "l1-3": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 5,
+        "team1Source": "l",
+        "team2": 10,
+        "team2Source": "w",
+        "winner": 5
+      },
+      "l2-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 14,
+        "team1Source": "l",
+        "team2": 0,
+        "team2Source": "l",
+        "winner": 14
+      },
+      "l2-1": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 12,
+        "team1Source": "l",
+        "team2": 5,
+        "team2Source": "l",
+        "winner": 12
+      },
+      "l3-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 9,
+        "team1Source": "w",
+        "team2": 14,
+        "team2Source": "l",
+        "winner": 9
+      },
+      "l3-1": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 3,
+        "team1Source": "w",
+        "team2": 12,
+        "team2Source": "l",
+        "winner": 3
+      },
+      "l4-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 3,
+        "team1Source": "l",
+        "team2": 9,
+        "team2Source": "l",
+        "winner": 3
+      },
+      "l5-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 3,
+        "team1Source": "l",
+        "team2": 4,
+        "team2Source": "w",
+        "winner": 3
       }
-    ],
+    },
     "matches": {
       "final": {
-        "score1": 2,
-        "score2": 1,
-        "team1": 1,
-        "team2": 0,
-        "winner": 1
+        "score1": 1,
+        "score2": 0,
+        "team1": 2,
+        "team2": 3,
+        "winner": 2
       },
       "w0-0": {
-        "score1": 2,
-        "score2": 1,
-        "team1": 1,
-        "team2": 0,
-        "winner": 1
+        "score1": 1,
+        "score2": 0,
+        "team1": 2,
+        "team2": 14,
+        "winner": 2
       },
       "w0-1": {
         "score1": 1,
-        "score2": 2,
-        "team1": 2,
-        "team2": 3,
+        "score2": 0,
+        "team1": 8,
+        "team2": 6,
+        "winner": 8
+      },
+      "w0-2": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 9,
+        "team2": 0,
+        "winner": 9
+      },
+      "w0-3": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 15,
+        "team2": 1,
+        "winner": 15
+      },
+      "w0-4": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 4,
+        "team2": 12,
+        "winner": 4
+      },
+      "w0-5": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 7,
+        "team2": 13,
+        "winner": 7
+      },
+      "w0-6": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 3,
+        "team2": 5,
         "winner": 3
       },
+      "w0-7": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 10,
+        "team2": 11,
+        "winner": 10
+      },
       "w1-0": {
-        "score1": 2,
-        "score2": 1,
-        "team1": 1,
-        "team2": 3,
-        "winner": 1
-      }
-    },
-    "losersMatches": {
-      "l0-0": {
-        "score1": 3,
-        "score2": 1,
-        "team1": 0,
-        "team2": 2,
-        "winner": 0
-      },
-      "l1-0": {
-        "score1": 2,
-        "score2": 1,
-        "team1": 0,
-        "team2": 3,
-        "winner": 0
-      }
-    },
-    "bracketType": "double",
-    "title": "Example Tournament",
-    "description": "This is an example tournament to demonstrate the bracket system. You can edit this tournament or create your own from the admin panel.",
-    "date": "Nov 9 - Nov 16, 2025",
-    "status": "ongoing",
-    "image": "assets/img/bracket.png"
-  },
-  {
-    "id": "test1",
-    "numTeams": 32,
-    "teams": [
-      {
-        "id": 27,
-        "name": "Team 28",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 22,
-        "name": "Team 23",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 24,
-        "name": "Team 25",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 29,
-        "name": "Team 30",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 1,
-        "name": "Team 2",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 13,
-        "name": "Team 14",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 0,
-        "name": "Team 1",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 9,
-        "name": "Team 10",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 2,
-        "name": "Team 3",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 3,
-        "name": "Team 4",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 7,
-        "name": "Team 8",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 23,
-        "name": "Team 24",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 14,
-        "name": "Team 15",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 12,
-        "name": "Team 13",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 17,
-        "name": "Team 18",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 16,
-        "name": "Team 17",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 30,
-        "name": "Team 31",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 26,
-        "name": "Team 27",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 18,
-        "name": "Team 19",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 5,
-        "name": "Team 6",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 21,
-        "name": "Team 22",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 15,
-        "name": "Team 16",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 11,
-        "name": "Team 12",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 31,
-        "name": "Team 32",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 28,
-        "name": "Team 29",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 6,
-        "name": "Team 7",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 8,
-        "name": "Team 9",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 20,
-        "name": "Team 21",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 25,
-        "name": "Team 26",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 10,
-        "name": "Team 11",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 4,
-        "name": "Team 5",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      },
-      {
-        "id": 19,
-        "name": "Team 20",
-        "captain": "",
-        "gameId": "",
-        "eliminated": false
-      }
-    ],
-    "matches": {
-      "0-0": {
-        "team1": 27,
-        "team2": 22,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-1": {
-        "team1": 24,
-        "team2": 29,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-2": {
-        "team1": 1,
-        "team2": 13,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-3": {
-        "team1": 0,
-        "team2": 9,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-4": {
+        "score1": 1,
+        "score2": 0,
         "team1": 2,
-        "team2": 3,
-        "winner": null,
-        "score1": null,
-        "score2": null
+        "team2": 8,
+        "winner": 2
       },
-      "0-5": {
-        "team1": 7,
-        "team2": 23,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-6": {
-        "team1": 14,
-        "team2": 12,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-7": {
-        "team1": 17,
-        "team2": 16,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-8": {
-        "team1": 30,
-        "team2": 26,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-9": {
-        "team1": 18,
-        "team2": 5,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-10": {
-        "team1": 21,
+      "w1-1": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 9,
         "team2": 15,
-        "winner": null,
-        "score1": null,
-        "score2": null
+        "winner": 9
       },
-      "0-11": {
-        "team1": 11,
-        "team2": 31,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-12": {
-        "team1": 28,
-        "team2": 6,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-13": {
-        "team1": 8,
-        "team2": 20,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-14": {
-        "team1": 25,
-        "team2": 10,
-        "winner": null,
-        "score1": null,
-        "score2": null
-      },
-      "0-15": {
+      "w1-2": {
+        "score1": 1,
+        "score2": 0,
         "team1": 4,
-        "team2": 19,
-        "winner": null,
-        "score1": null,
-        "score2": null
+        "team2": 7,
+        "winner": 4
+      },
+      "w1-3": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 3,
+        "team2": 10,
+        "winner": 3
+      },
+      "w2-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 2,
+        "team2": 9,
+        "winner": 2
+      },
+      "w2-1": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 4,
+        "team2": 3,
+        "winner": 4
+      },
+      "w3-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 2,
+        "team2": 4,
+        "winner": 2
       }
     },
-    "losersMatches": {},
-    "bracketType": "single",
-    "title": "Test Tournament 1",
-    "description": "Example 32 team randomized start",
-    "date": "Test1",
-    "status": "upcoming",
-    "image": "assets/img/SouthLANder.png"
-  },
-  {
-    "id": "16ppltest",
     "numTeams": 16,
+    "status": "ongoing",
     "teams": [
       {
         "captain": "",
@@ -553,253 +363,189 @@
         "name": "Team 12"
       }
     ],
+    "title": "double elim 16 ppl test"
+  },
+  {
+    "bracketType": "double",
+    "date": "November 14 2025 - 7:00 PM",
+    "description": "The winners of this tournament qualify to the LAN event ran by NUEL and VUKC on the 30th November at the Red Bull Gaming Sphere with a prize pool of £1500! ",
+    "id": "svge2v2",
+    "image": "assets/img/valorant.jpg",
+    "losersMatches": {},
     "matches": {
       "w0-0": {
-        "score1": 1,
-        "score2": 0,
-        "team1": 2,
-        "team2": 14,
-        "winner": 2
+        "score1": null,
+        "score2": null,
+        "team1": 11,
+        "team2": 12,
+        "winner": null
       },
       "w0-1": {
-        "score1": 1,
-        "score2": 0,
-        "team1": 8,
-        "team2": 6,
-        "winner": 8
+        "score1": null,
+        "score2": null,
+        "team1": 4,
+        "team2": 7,
+        "winner": null
       },
       "w0-2": {
-        "score1": 1,
-        "score2": 0,
-        "team1": 9,
+        "score1": null,
+        "score2": null,
+        "team1": 1,
         "team2": 0,
-        "winner": 9
+        "winner": null
       },
       "w0-3": {
-        "score1": 1,
-        "score2": 0,
-        "team1": 15,
-        "team2": 1,
-        "winner": 15
+        "score1": null,
+        "score2": null,
+        "team1": 6,
+        "team2": 8,
+        "winner": null
       },
       "w0-4": {
-        "score1": 1,
-        "score2": 0,
-        "team1": 4,
-        "team2": 12,
-        "winner": 4
+        "score1": null,
+        "score2": null,
+        "team1": 9,
+        "team2": 5,
+        "winner": null
       },
       "w0-5": {
-        "score1": 1,
-        "score2": 0,
-        "team1": 7,
-        "team2": 13,
-        "winner": 7
+        "score1": null,
+        "score2": null,
+        "team1": 3,
+        "team2": 15,
+        "winner": null
       },
       "w0-6": {
-        "score1": 1,
-        "score2": 0,
-        "team1": 3,
-        "team2": 5,
-        "winner": 3
+        "score1": null,
+        "score2": null,
+        "team1": 2,
+        "team2": 14,
+        "winner": null
       },
       "w0-7": {
-        "score1": 1,
-        "score2": 0,
+        "score1": null,
+        "score2": null,
         "team1": 10,
-        "team2": 11,
-        "winner": 10
-      },
-      "w1-0": {
-        "team1": 2,
-        "team2": 8,
-        "score1": 1,
-        "score2": 0,
-        "winner": 2
-      },
-      "w1-1": {
-        "team1": 9,
-        "team2": 15,
-        "score1": 1,
-        "score2": 0,
-        "winner": 9
-      },
-      "w1-2": {
-        "team1": 4,
-        "team2": 7,
-        "score1": 1,
-        "score2": 0,
-        "winner": 4
-      },
-      "w1-3": {
-        "team1": 3,
-        "team2": 10,
-        "score1": 1,
-        "score2": 0,
-        "winner": 3
-      },
-      "w2-0": {
-        "team1": 2,
-        "team2": 9,
-        "score1": 1,
-        "score2": 0,
-        "winner": 2
-      },
-      "w2-1": {
-        "team1": 4,
-        "team2": 3,
-        "score1": 1,
-        "score2": 0,
-        "winner": 4
-      },
-      "w3-0": {
-        "team1": 2,
-        "team2": 4,
-        "score1": 1,
-        "score2": 0,
-        "winner": 2
-      },
-      "final": {
-        "team1": 2,
-        "team2": 3,
-        "score1": 1,
-        "score2": 0,
-        "winner": 2
-      }
-    },
-    "losersMatches": {
-      "l0-0": {
-        "team1": 14,
-        "team1Source": "w",
-        "team2": 6,
-        "team2Source": "w",
-        "score1": 1,
-        "score2": 0,
-        "winner": 14
-      },
-      "l0-1": {
-        "team1": 0,
-        "team1Source": "w",
-        "team2": 1,
-        "team2Source": "w",
-        "score1": 1,
-        "score2": 0,
-        "winner": 0
-      },
-      "l0-2": {
-        "team1": 12,
-        "team1Source": "w",
         "team2": 13,
-        "team2Source": "w",
-        "score1": 1,
-        "score2": 0,
-        "winner": 12
-      },
-      "l0-3": {
-        "team1": 5,
-        "team1Source": "w",
-        "team2": 11,
-        "team2Source": "w",
-        "score1": 1,
-        "score2": 0,
-        "winner": 5
-      },
-      "l1-0": {
-        "team1": 14,
-        "team1Source": "l",
-        "team2": 8,
-        "team2Source": "w",
-        "score1": 1,
-        "score2": 0,
-        "winner": 14
-      },
-      "l1-1": {
-        "team1": 0,
-        "team1Source": "l",
-        "team2": 15,
-        "team2Source": "w",
-        "score1": 2,
-        "score2": 1,
-        "winner": 0
-      },
-      "l1-2": {
-        "team1": 12,
-        "team1Source": "l",
-        "team2": 7,
-        "team2Source": "w",
-        "score1": 1,
-        "score2": 0,
-        "winner": 12
-      },
-      "l1-3": {
-        "team1": 5,
-        "team1Source": "l",
-        "team2": 10,
-        "team2Source": "w",
-        "score1": 1,
-        "score2": 0,
-        "winner": 5
-      },
-      "l2-0": {
-        "team1": 14,
-        "team1Source": "l",
-        "team2": 0,
-        "team2Source": "l",
-        "score1": 1,
-        "score2": 0,
-        "winner": 14
-      },
-      "l2-1": {
-        "team1": 12,
-        "team1Source": "l",
-        "team2": 5,
-        "team2Source": "l",
-        "score1": 1,
-        "score2": 0,
-        "winner": 12
-      },
-      "l3-0": {
-        "team1": 9,
-        "team1Source": "w",
-        "team2": 14,
-        "team2Source": "l",
-        "score1": 1,
-        "score2": 0,
-        "winner": 9
-      },
-      "l3-1": {
-        "team1": 3,
-        "team1Source": "w",
-        "team2": 12,
-        "team2Source": "l",
-        "score1": 1,
-        "score2": 0,
-        "winner": 3
-      },
-      "l4-0": {
-        "team1": 3,
-        "team1Source": "l",
-        "team2": 9,
-        "team2Source": "l",
-        "score1": 1,
-        "score2": 0,
-        "winner": 3
-      },
-      "l5-0": {
-        "team1": 3,
-        "team1Source": "l",
-        "team2": 4,
-        "team2Source": "w",
-        "score1": 1,
-        "score2": 0,
-        "winner": 3
+        "winner": null
       }
     },
-    "bracketType": "double",
-    "title": "double elim 16 ppl test",
-    "description": "Join us for an exciting tournament! Battle it out with other teams to claim victory.",
-    "date": "November 9 - November 9, 2025",
-    "status": "ongoing",
-    "image": "assets/img/bracket.png"
+    "numTeams": 16,
+    "status": "upcoming",
+    "teams": [
+      {
+        "captain": "sweettripsitter",
+        "eliminated": false,
+        "gameId": "",
+        "id": 11,
+        "name": "sweettripsitter + yak"
+      },
+      {
+        "captain": "dylanbtw",
+        "eliminated": false,
+        "gameId": "",
+        "id": 12,
+        "name": "dylanbtw + bamhurger"
+      },
+      {
+        "captain": "hystericalfr",
+        "eliminated": false,
+        "gameId": "",
+        "id": 4,
+        "name": "hystericalfr + ohze"
+      },
+      {
+        "captain": "bazthelad",
+        "eliminated": false,
+        "gameId": "",
+        "id": 7,
+        "name": "bazthelad + wa ge"
+      },
+      {
+        "captain": "xenostrology",
+        "eliminated": false,
+        "gameId": "",
+        "id": 1,
+        "name": "xenostrology + notify.fr"
+      },
+      {
+        "captain": "beeswaka",
+        "eliminated": false,
+        "gameId": "",
+        "id": 0,
+        "name": "beeswaka + tomorin671"
+      },
+      {
+        "captain": "techy",
+        "eliminated": false,
+        "gameId": "",
+        "id": 6,
+        "name": "techy + xxbalt"
+      },
+      {
+        "captain": "kiwibirbs",
+        "eliminated": false,
+        "gameId": "",
+        "id": 8,
+        "name": "kiwibirbs + blueaall"
+      },
+      {
+        "captain": ".nuhaid",
+        "eliminated": false,
+        "gameId": "",
+        "id": 9,
+        "name": ".nuhaid + _um4ir"
+      },
+      {
+        "captain": "da.ve.",
+        "eliminated": false,
+        "gameId": "",
+        "id": 5,
+        "name": "da.ve. + brody nichols"
+      },
+      {
+        "captain": "cumbyte",
+        "eliminated": false,
+        "gameId": "",
+        "id": 3,
+        "name": "cumbyte + kinkbye"
+      },
+      {
+        "captain": "",
+        "eliminated": false,
+        "gameId": "",
+        "id": 15,
+        "name": "Team 16"
+      },
+      {
+        "captain": "simonexr",
+        "eliminated": false,
+        "gameId": "",
+        "id": 2,
+        "name": "simonexr + milktf"
+      },
+      {
+        "captain": "selego",
+        "eliminated": false,
+        "gameId": "",
+        "id": 14,
+        "name": "selego + symple"
+      },
+      {
+        "captain": "synergy",
+        "eliminated": false,
+        "gameId": "",
+        "id": 10,
+        "name": "synergy + skidals"
+      },
+      {
+        "captain": "yem",
+        "eliminated": false,
+        "gameId": "",
+        "id": 13,
+        "name": "yem + robbie"
+      }
+    ],
+    "title": "SVGE 2v2 Tournament"
   }
 ]

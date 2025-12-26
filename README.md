@@ -1,5 +1,10 @@
 Website built with Html, Javascript and Python Flask
 
+Includes:
+- main society information page
+- tournaments page
+- tournament admin panel
+
 ## Project Structure
 
 ```

@@ -1,51 +1,13 @@
-# SVGE Tournament System
-
-A comprehensive tournament management system built with Flask and vanilla JavaScript, supporting both single and double elimination brackets.
+Website built with Html, Javascript and Python Flask
 
 ## Features
 
-- 🏆 **Single & Double Elimination Brackets** - Support for 4, 8, 16, and 32 teams
-- ⚡ **Real-time Updates** - Score tracking with automatic winner advancement
-- 🔒 **Secure Admin Panel** - Server-side authentication with session management
-- 📊 **Validation Tools** - Built-in bracket routing validation for debugging
+-  **Validation Tools** - Built-in bracket routing validation for debugging
 - 📱 **Responsive Design** - Works on desktop and mobile devices
 - 🎨 **Clean UI** - Bootstrap-based interface with intuitive controls
 
-## Quick Start
 
-### Prerequisites
 
-- Python 3.8 or higher
-- pip (Python package manager)
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd SVGE
-```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Run the server:
-```bash
-python app.py
-```
-
-4. Open your browser to:
-- Public view: http://localhost:80
-- Admin panel: http://localhost:80/admin-login.html
-
-### Default Admin Credentials
-
-- **Username**: (none required)
-- **Password**: `svgeadmin2025`
-
-**⚠️ IMPORTANT: Change the default password before deploying to production!**
 
 See [SECURITY.md](SECURITY.md) for instructions on changing the password.
 

@@ -1,45 +1,5 @@
 Website built with Html, Javascript and Python Flask
 
-## Features
-
--  **Validation Tools** - Built-in bracket routing validation for debugging
-- 📱 **Responsive Design** - Works on desktop and mobile devices
-- 🎨 **Clean UI** - Bootstrap-based interface with intuitive controls
-
-
-
-
-See [SECURITY.md](SECURITY.md) for instructions on changing the password.
-
-## Admin Features
-
-### Tournament Management
-- Create, edit, and delete tournaments
-- Randomize team assignments
-- Manual team assignment with drag-and-drop feel
-- Score-based automatic winner advancement
-
-### Bracket Features
-- Visual bracket editor
-- "Validates to" labels showing next-match routing
-- Compact admin view for easier visualization
-- **Validate Bracket** button for debugging routing issues
-- Real-time console logging for losers bracket advancement
-
-### Supported Bracket Types
-
-#### Single Elimination
-- Standard tournament format
-- Loser is immediately eliminated
-- Supports 4, 8, 16, and 32 teams
-
-#### Double Elimination
-- Teams get a second chance
-- Winners bracket and losers bracket
-- Losers from winners drop to losers bracket
-- Grand finals between winners champion and losers champion
-- Correct routing for 16-team losers bracket (L0→L1, L1→L2 identity mapping)
-
 ## Project Structure
 
 ```

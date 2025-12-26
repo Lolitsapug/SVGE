@@ -4,22 +4,22 @@ Website built with Html, Javascript and Python Flask
 
 ```
 SVGE/
-├── app.py                          # Flask backend with authentication
-├── requirements.txt                # Python dependencies
-├── generate_password_hash.py       # Password hash generator utility
-├── SECURITY.md                     # Security documentation
-├── tournaments_data.json           # Tournament data storage
-└── webroot/                        # Frontend files
-    ├── index.html                  # Landing page
-    ├── tournaments.html            # Public tournament list
-    ├── admin-login.html            # Admin authentication
-    ├── tournament-admin.html       # Tournament editor
-    ├── manage-tournaments.html     # Tournament management
+├── app.py                          
+├── requirements.txt                
+├── generate_password_hash.py       
+├── SECURITY.md                     
+├── tournaments_data.json          
+└── webroot/                       
+    ├── index.html                  
+    ├── tournaments.html            
+    ├── admin-login.html            
+    ├── tournament-admin.html       
+    ├── manage-tournaments.html     
     └── assets/
         ├── css/
-        │   └── tournament.css      # Tournament styling
+        ├── images/
         └── js/
-            ├── api-helper.js       # API client with auth
-            ├── tournament-admin.js # Admin bracket logic
-            └── tournament-view.js  # Public bracket viewer
+            ├── api-helper.js       
+            ├── tournament-admin.js 
+            └── tournament-view.js 
 ```

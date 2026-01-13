@@ -371,67 +371,250 @@
     "description": "The winners of this tournament qualify to the LAN event ran by NUEL and VUKC on the 30th November at the Red Bull Gaming Sphere with a prize pool of £1500! ",
     "id": "svge2v2",
     "image": "assets/img/valorant.jpg",
-    "losersMatches": {},
+    "losersMatches": {
+      "l0-0": {
+        "score1": 0,
+        "score2": 1,
+        "team1": 11,
+        "team1Source": "w",
+        "team2": 7,
+        "team2Source": "w",
+        "winner": 7
+      },
+      "l0-1": {
+        "score1": 2,
+        "score2": 0,
+        "team1": 1,
+        "team1Source": "w",
+        "team2": 6,
+        "team2Source": "w",
+        "winner": 1
+      },
+      "l0-2": {
+        "score1": 0,
+        "score2": 1,
+        "team1": 5,
+        "team1Source": "w",
+        "team2": 3,
+        "team2Source": "w",
+        "winner": 3
+      },
+      "l0-3": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 14,
+        "team1Source": "w",
+        "team2": 10,
+        "team2Source": "w",
+        "winner": 14
+      },
+      "l1-0": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 7,
+        "team1Source": "l",
+        "team2": 4,
+        "team2Source": "w",
+        "winner": 7
+      },
+      "l1-1": {
+        "score1": 2,
+        "score2": 1,
+        "team1": 1,
+        "team1Source": "l",
+        "team2": 8,
+        "team2Source": "w",
+        "winner": 1
+      },
+      "l1-2": {
+        "score1": 1,
+        "score2": 0,
+        "team1": 3,
+        "team1Source": "l",
+        "team2": 9,
+        "team2Source": "w",
+        "winner": 3
+      },
+      "l1-3": {
+        "score1": 0,
+        "score2": 2,
+        "team1": 14,
+        "team1Source": "l",
+        "team2": 2,
+        "team2Source": "w",
+        "winner": 2
+      },
+      "l2-0": {
+        "score1": 2,
+        "score2": 0,
+        "team1": 7,
+        "team1Source": "l",
+        "team2": 1,
+        "team2Source": "l",
+        "winner": 7
+      },
+      "l2-1": {
+        "score1": 1,
+        "score2": 2,
+        "team1": 3,
+        "team1Source": "l",
+        "team2": 2,
+        "team2Source": "l",
+        "winner": 2
+      },
+      "l3-0": {
+        "score1": 2,
+        "score2": 1,
+        "team1": 7,
+        "team1Source": "l",
+        "team2": 12,
+        "team2Source": "w",
+        "winner": 7
+      },
+      "l3-1": {
+        "score1": 0,
+        "score2": 2,
+        "team1": 2,
+        "team1Source": "l",
+        "team2": 13,
+        "team2Source": "w",
+        "winner": 13
+      },
+      "l4-0": {
+        "score1": 0,
+        "score2": 2,
+        "team1": 7,
+        "team1Source": "l",
+        "team2": 13,
+        "team2Source": "l",
+        "winner": 13
+      },
+      "l5-0": {
+        "score1": 2,
+        "score2": 0,
+        "team1": 13,
+        "team1Source": "l",
+        "team2": 0,
+        "team2Source": "w",
+        "winner": 13
+      }
+    },
     "matches": {
+      "final": {
+        "score1": 2,
+        "score2": 1,
+        "team1": 15,
+        "team2": 13,
+        "winner": 15
+      },
       "w0-0": {
-        "score1": null,
-        "score2": null,
+        "score1": 0,
+        "score2": 1,
         "team1": 11,
         "team2": 12,
-        "winner": null
+        "winner": 12
       },
       "w0-1": {
-        "score1": null,
-        "score2": null,
+        "score1": 2,
+        "score2": 1,
         "team1": 4,
         "team2": 7,
-        "winner": null
+        "winner": 4
       },
       "w0-2": {
-        "score1": null,
-        "score2": null,
+        "score1": 1,
+        "score2": 2,
         "team1": 1,
         "team2": 0,
-        "winner": null
+        "winner": 0
       },
       "w0-3": {
-        "score1": null,
-        "score2": null,
+        "score1": 0,
+        "score2": 2,
         "team1": 6,
         "team2": 8,
-        "winner": null
+        "winner": 8
       },
       "w0-4": {
-        "score1": null,
-        "score2": null,
+        "score1": 1,
+        "score2": 0,
         "team1": 9,
         "team2": 5,
-        "winner": null
+        "winner": 9
       },
       "w0-5": {
-        "score1": null,
-        "score2": null,
+        "score1": 0,
+        "score2": 2,
         "team1": 3,
         "team2": 15,
-        "winner": null
+        "winner": 15
       },
       "w0-6": {
-        "score1": null,
-        "score2": null,
+        "score1": 2,
+        "score2": 1,
         "team1": 2,
         "team2": 14,
-        "winner": null
+        "winner": 2
       },
       "w0-7": {
-        "score1": null,
-        "score2": null,
+        "score1": 0,
+        "score2": 1,
         "team1": 10,
         "team2": 13,
-        "winner": null
+        "winner": 13
+      },
+      "w1-0": {
+        "score1": 2,
+        "score2": 1,
+        "team1": 12,
+        "team2": 4,
+        "winner": 12
+      },
+      "w1-1": {
+        "score1": 2,
+        "score2": 0,
+        "team1": 0,
+        "team2": 8,
+        "winner": 0
+      },
+      "w1-2": {
+        "score1": 0,
+        "score2": 2,
+        "team1": 9,
+        "team2": 15,
+        "winner": 15
+      },
+      "w1-3": {
+        "score1": 0,
+        "score2": 2,
+        "team1": 2,
+        "team2": 13,
+        "winner": 13
+      },
+      "w2-0": {
+        "score1": 1,
+        "score2": 2,
+        "team1": 12,
+        "team2": 0,
+        "winner": 0
+      },
+      "w2-1": {
+        "score1": 2,
+        "score2": 0,
+        "team1": 15,
+        "team2": 13,
+        "winner": 15
+      },
+      "w3-0": {
+        "score1": 0,
+        "score2": 2,
+        "team1": 0,
+        "team2": 15,
+        "winner": 15
       }
     },
     "numTeams": 16,
-    "status": "upcoming",
+    "status": "completed",
     "teams": [
       {
         "captain": "sweettripsitter",
@@ -442,7 +625,7 @@
       },
       {
         "captain": "dylanbtw",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 12,
         "name": "dylanbtw + bamhurger"
@@ -456,42 +639,42 @@
       },
       {
         "captain": "bazthelad",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 7,
         "name": "bazthelad + wa ge"
       },
       {
         "captain": "xenostrology",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 1,
         "name": "xenostrology + notify.fr"
       },
       {
         "captain": "beeswaka",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 0,
         "name": "beeswaka + tomorin671"
       },
       {
         "captain": "techy",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 6,
         "name": "techy + xxbalt"
       },
       {
         "captain": "kiwibirbs",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 8,
         "name": "kiwibirbs + blueaall"
       },
       {
         "captain": ".nuhaid",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 9,
         "name": ".nuhaid + _um4ir"
@@ -505,21 +688,21 @@
       },
       {
         "captain": "cumbyte",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 3,
         "name": "cumbyte + kinkbye"
       },
       {
         "captain": "",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 15,
         "name": "ntro + skidals"
       },
       {
         "captain": "simonexr",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 2,
         "name": "simonexr + milktf"
@@ -533,7 +716,7 @@
       },
       {
         "captain": "bobby",
-        "eliminated": false,
+        "eliminated": true,
         "gameId": "",
         "id": 10,
         "name": "bobby + bmm"

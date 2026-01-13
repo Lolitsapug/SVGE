@@ -609,16 +609,16 @@ function createLosersRound(roundNum, numTeams) {
     
     // Losers bracket structure:
     // The pattern alternates: same count, then halve, repeat
+    // For 4 teams: L0(1), L1(1)
     // For 8 teams: L0(2), L1(2), L2(1), L3(1)
     // For 16 teams: L0(4), L1(4), L2(2), L3(2), L4(1), L5(1)
     // For 32 teams: L0(8), L1(8), L2(4), L3(4), L4(2), L5(2), L6(1), L7(1)
     //
-    // Formula: matches = (numTeams / 4) / 2^floor(roundNum/2)
+    // Formula: matches = max(1, (numTeams / 4) / 2^floor(roundNum/2))
     
-    let matchesInRound;
-    const initialMatches = numTeams / 4; // Starting matches in L0
+    const initialMatches = Math.max(1, numTeams / 4); // Starting matches in L0
     const halvingFactor = Math.floor(roundNum / 2); // How many times to halve
-    matchesInRound = initialMatches / Math.pow(2, halvingFactor);
+    const matchesInRound = Math.max(1, Math.floor(initialMatches / Math.pow(2, halvingFactor)));
     
     for (let i = 0; i < matchesInRound; i++) {
         const matchKey = `l${roundNum}-${i}`;
@@ -629,7 +629,7 @@ function createLosersRound(roundNum, numTeams) {
     return roundDiv;
 }
 
-// Create grand finals
+// Create grand finals (includes reset match for true double elimination)
 function createGrandFinals() {
     const roundDiv = document.createElement('div');
     roundDiv.className = 'bracket-round championship mt-4';
@@ -640,8 +640,25 @@ function createGrandFinals() {
     
     roundDiv.appendChild(title);
     
+    // Grand Finals Match 1
     const match = createMatchWithKey('final', 'final', 0, tournamentData.numTeams);
     roundDiv.appendChild(match);
+    
+    // Info about reset match
+    const resetInfo = document.createElement('div');
+    resetInfo.className = 'text-muted small text-center my-2';
+    resetInfo.innerHTML = '<em>If Losers Bracket winner wins ↑, a reset match is required</em>';
+    roundDiv.appendChild(resetInfo);
+    
+    // Grand Finals Reset Match (only played if losers bracket winner wins GF1)
+    const resetTitle = document.createElement('div');
+    resetTitle.className = 'round-title mt-3';
+    resetTitle.style.fontSize = '0.9rem';
+    resetTitle.textContent = 'Reset Match (if needed)';
+    roundDiv.appendChild(resetTitle);
+    
+    const resetMatch = createMatchWithKey('final-reset', 'final-reset', 0, tournamentData.numTeams);
+    roundDiv.appendChild(resetMatch);
     
     return roundDiv;
 }
@@ -909,9 +926,41 @@ function advanceWinner(matchKey, teamId, slot) {
     }
     
     if (matchKey === 'final') {
-        // Final match - no advancement
+        // Grand Finals Match 1
+        const isDoubleElimFinal = tournamentData.bracketType === 'double';
+        
+        if (isDoubleElimFinal) {
+            // In double elim: team1 = winners bracket winner, team2 = losers bracket winner
+            // If team2 (losers bracket) wins, need a reset match
+            if (teamId === matchData.team2) {
+                // Losers bracket winner won GF1 - set up reset match
+                if (!tournamentData.matches['final-reset']) {
+                    tournamentData.matches['final-reset'] = {};
+                }
+                tournamentData.matches['final-reset'].team1 = matchData.team1; // Former winners bracket winner
+                tournamentData.matches['final-reset'].team2 = matchData.team2; // Losers bracket winner
+                
+                generateBracket();
+                showSaveIndicator('Reset match required! Both players now have 1 loss.', 'warning');
+                return;
+            } else {
+                // Winners bracket winner won - they are the champion (opponent has 2 losses)
+                generateBracket();
+                showSaveIndicator('Champion determined!', 'success');
+                return;
+            }
+        } else {
+            // Single elimination - just crown the winner
+            generateBracket();
+            showSaveIndicator('Champion determined!', 'success');
+            return;
+        }
+    }
+    
+    if (matchKey === 'final-reset') {
+        // Reset match - winner is the true champion
         generateBracket();
-        showSaveIndicator('Champion determined!', 'success');
+        showSaveIndicator('TRUE CHAMPION determined!', 'success');
         return;
     }
     
@@ -964,46 +1013,55 @@ function advanceWinner(matchKey, teamId, slot) {
                 // Winners Round 0 → Losers Round 0 (first losers round)
                 // Winners Round 1 → Losers Round 1 (plays against winners of Losers R0)
                 // Winners Round 2 → Losers Round 3 (plays against winners of Losers R2)
+                // Winners Round 3 → Losers Round 5 (plays against winners of Losers R4)
                 // Pattern: Winners Round N → Losers Round (N == 0 ? 0 : (N * 2 - 1))
                 const losersRound = roundNum === 0 ? 0 : (roundNum * 2 - 1);
                 
                 // Calculate which match in that losers round
-                // For round 0: two winners matches feed one losers match
-                // For later rounds: each winners match feeds one losers match
-                const losersMatch = roundNum === 0 ? Math.floor(matchNum / 2) : matchNum;
+                // The number of matches in each losers round follows this pattern:
+                // - L0: numTeams/4 matches (pairs from W0)
+                // - L1: same as L0 (W1 losers join L0 winners)
+                // - L2: L0/2 matches (L1 winners consolidate)
+                // - L3: same as L2 (W2 losers join L2 winners)
+                // And so on...
+                
+                const matchesInLosersRound = getLosersMatchesCount(losersRound, tournamentData.numTeams);
+                
+                let losersMatch;
+                let slotKey;
+                
+                if (roundNum === 0) {
+                    // Winners R0: pairs of adjacent matches go to same losers match (mirrored)
+                    // For 16 teams: W0-0,W0-1 → L0-3; W0-2,W0-3 → L0-2; W0-4,W0-5 → L0-1; W0-6,W0-7 → L0-0
+                    // For 8 teams: W0-0,W0-1 → L0-1; W0-2,W0-3 → L0-0
+                    // For 4 teams: W0-0,W0-1 → L0-0
+                    const pairIndex = Math.floor(matchNum / 2);
+                    losersMatch = Math.max(0, matchesInLosersRound - 1 - pairIndex);
+                    // Even matchNum → team1, odd → team2
+                    slotKey = (matchNum % 2 === 0) ? 'team1' : 'team2';
+                } else {
+                    // Winners R1+: identity mapping with mirror
+                    // For 16 teams: W1-0 → L1-3, W1-1 → L1-2, W1-2 → L1-1, W1-3 → L1-0
+                    // For 8 teams: W1-0 → L1-1, W1-1 → L1-0
+                    // For 4 teams: W1-0 → L1-0
+                    // For 32 teams: W1-0 → L1-7, ..., W1-7 → L1-0
+                    losersMatch = Math.max(0, matchesInLosersRound - 1 - matchNum);
+                    // Always goes into team2 slot (team1 comes from previous losers round)
+                    slotKey = 'team2';
+                }
+                
                 const losersMatchKey = `l${losersRound}-${losersMatch}`;
+                
+                console.log(`🔄 Loser routing: W${roundNum}-${matchNum} loser (Team ${loserId}) → ${losersMatchKey} ${slotKey}`);
                 
                 if (!tournamentData.losersMatches[losersMatchKey]) {
                     tournamentData.losersMatches[losersMatchKey] = {};
                 }
 
-                // Assign to team slot
-                if (roundNum === 0) {
-                    // For first losers round, alternate slots based on match number
-                    // Winners match 0 loser → Losers match 0 team1
-                    // Winners match 1 loser → Losers match 0 team2
-                    if (matchNum % 2 === 0) {
-                        // avoid duplicate placement if this team is already in losers
-                        if (!isTeamInLosers(loserId)) {
-                            tournamentData.losersMatches[losersMatchKey].team1 = loserId;
-                            tournamentData.losersMatches[losersMatchKey].team1Source = 'w';
-                        }
-                    } else {
-                        if (!isTeamInLosers(loserId)) {
-                            tournamentData.losersMatches[losersMatchKey].team2 = loserId;
-                            tournamentData.losersMatches[losersMatchKey].team2Source = 'w';
-                        }
-                    }
-                } else {
-                    // For later rounds, try to place the loser into a match pairing a 'w' with an 'l'
-                    const placed = placeInLosersRound(losersRound, losersMatch, loserId, 'w');
-                    if (!placed) {
-                        // As a fallback, put into the computed match slot (team2) and mark source
-                        if (!isTeamInLosers(loserId)) {
-                            tournamentData.losersMatches[losersMatchKey].team2 = loserId;
-                            tournamentData.losersMatches[losersMatchKey].team2Source = 'w';
-                        }
-                    }
+                // Place the loser in the correct slot
+                if (!isTeamInLosers(loserId)) {
+                    tournamentData.losersMatches[losersMatchKey][slotKey] = loserId;
+                    tournamentData.losersMatches[losersMatchKey][`${slotKey}Source`] = 'w';
                 }
             }
         } else if (isLosersBracket) {
@@ -1021,67 +1079,58 @@ function advanceWinner(matchKey, teamId, slot) {
                 // Winner advances to next losers round
                 const nextRound = roundNum + 1;
 
-                // Determine matches in this and next rounds so we can choose mapping strategy
+                // Determine matches in this and next rounds
                 const matchesInThis = getLosersMatchesCount(roundNum, tournamentData.numTeams);
                 const matchesInNext = getLosersMatchesCount(nextRound, tournamentData.numTeams);
 
-                // If next round has the same number of matches, map by identity (matchNum -> same match index)
-                // Otherwise, group pairs into the same next-match (floor(matchNum/2)).
-                const preferredMatch = (matchesInNext === matchesInThis) ? matchNum : Math.floor(matchNum / 2);
-
-                // Determine preferred slot: when preserving indices, default to team1; otherwise alternate by matchNum
-                const preferredSlotKey = (matchesInNext === matchesInThis) ? 'team1' : ((matchNum % 2 === 0) ? 'team1' : 'team2');
-
-                console.log(`📍 Losers advancement: ${matchKey} (Team ${teamId}) | Round ${roundNum} Match ${matchNum}`);
-                console.log(`   Matches: This round=${matchesInThis}, Next round=${matchesInNext}`);
-                console.log(`   Target: l${nextRound}-${preferredMatch} ${preferredSlotKey}`);
-
-                // Try intelligent placement first (this will try to pair 'l' with existing 'w' where appropriate)
-                const placedLoserWinner = placeInLosersRound(nextRound, preferredMatch, teamId, 'l');
-                if (!placedLoserWinner) {
-                    // Fallback: place into preferred match/slot if free, else try opposite slot, else overwrite
-                    const losersMatchKey = `l${nextRound}-${preferredMatch}`;
-                    if (!tournamentData.losersMatches[losersMatchKey]) {
-                        tournamentData.losersMatches[losersMatchKey] = {};
-                    }
-
-                    if (!tournamentData.losersMatches[losersMatchKey][preferredSlotKey]) {
-                        tournamentData.losersMatches[losersMatchKey][preferredSlotKey] = teamId;
-                        tournamentData.losersMatches[losersMatchKey][`${preferredSlotKey}Source`] = 'l';
-                        console.log(`   ✓ Placed in preferred: ${losersMatchKey} ${preferredSlotKey}`);
-                    } else {
-                        const oppositeSlot = preferredSlotKey === 'team1' ? 'team2' : 'team1';
-                        if (!tournamentData.losersMatches[losersMatchKey][oppositeSlot]) {
-                            tournamentData.losersMatches[losersMatchKey][oppositeSlot] = teamId;
-                            tournamentData.losersMatches[losersMatchKey][`${oppositeSlot}Source`] = 'l';
-                            console.log(`   ✓ Placed in opposite slot: ${losersMatchKey} ${oppositeSlot}`);
-                        } else {
-                            // overwrite as last resort
-                            tournamentData.losersMatches[losersMatchKey][preferredSlotKey] = teamId;
-                            tournamentData.losersMatches[losersMatchKey][`${preferredSlotKey}Source`] = 'l';
-                            console.log(`   ⚠️ OVERWRITE: ${losersMatchKey} ${preferredSlotKey} (was ${tournamentData.losersMatches[losersMatchKey][preferredSlotKey]})`);
-                        }
-                    }
+                // Losers bracket structure for 16 teams:
+                // L0: 4 matches (L0-0, L0-1, L0-2, L0-3) - losers from W0 play each other
+                // L1: 4 matches (L1-0, L1-1, L1-2, L1-3) - L0 winners vs W1 losers (team1 from L0, team2 from W1)
+                // L2: 2 matches (L2-0, L2-1) - L1 winners play each other (pairs consolidate)
+                // L3: 2 matches (L3-0, L3-1) - L2 winners vs W2 losers
+                // L4: 1 match (L4-0) - L3 winners play each other
+                // L5: 1 match (L5-0) - L4 winner vs W3 loser
+                
+                // Determine target match and slot
+                let targetMatch;
+                let targetSlot;
+                
+                if (matchesInNext === matchesInThis) {
+                    // Same number of matches: identity mapping (L0→L1, L2→L3, L4→L5)
+                    // These are "injection" rounds where winners bracket losers join
+                    // L0-N winner → L1-N team1
+                    targetMatch = matchNum;
+                    targetSlot = 'team1';
                 } else {
-                    console.log(`   ✓ Smart placement succeeded`);
+                    // Fewer matches in next round: pairs consolidate (L1→L2, L3→L4)
+                    // L1-0, L1-1 → L2-0; L1-2, L1-3 → L2-1
+                    targetMatch = Math.floor(matchNum / 2);
+                    targetSlot = (matchNum % 2 === 0) ? 'team1' : 'team2';
                 }
+
+                const losersMatchKey = `l${nextRound}-${targetMatch}`;
+                
+                console.log(`📍 Losers advancement: ${matchKey} (Team ${teamId}) → ${losersMatchKey} ${targetSlot}`);
+
+                if (!tournamentData.losersMatches[losersMatchKey]) {
+                    tournamentData.losersMatches[losersMatchKey] = {};
+                }
+
+                tournamentData.losersMatches[losersMatchKey][targetSlot] = teamId;
+                tournamentData.losersMatches[losersMatchKey][`${targetSlot}Source`] = 'l';
             }
             
-            // Loser is eliminated
-            if (loserId !== null && tournamentData.teams[loserId]) {
-                tournamentData.teams[loserId].eliminated = true;
+            // Loser is eliminated (lost twice = out of tournament)
+            if (loserId !== null) {
+                const loserTeam = getTeamById(loserId);
+                if (loserTeam) {
+                    loserTeam.eliminated = true;
+                }
             }
         }
         
-        // Advance winner, but don't eliminate loser in winners bracket
-        if (!isLosersBracket) {
-            // Only mark as eliminated if already lost once (in losers bracket)
-        } else {
-            // In losers bracket, loser is eliminated
-            if (loserId !== null && tournamentData.teams[loserId]) {
-                tournamentData.teams[loserId].eliminated = true;
-            }
-        }
+        // Note: In winners bracket, loser is NOT eliminated (they go to losers bracket)
+        // Elimination only happens in losers bracket (handled above)
     } else {
         // Single elimination logic
         if (roundNum !== 'final') {
@@ -1102,8 +1151,11 @@ function advanceWinner(matchKey, teamId, slot) {
         }
         
         // Mark eliminated team (single elim only)
-        if (loserId !== null && tournamentData.teams[loserId]) {
-            tournamentData.teams[loserId].eliminated = true;
+        if (loserId !== null) {
+            const loserTeam = getTeamById(loserId);
+            if (loserTeam) {
+                loserTeam.eliminated = true;
+            }
         }
     }
     
@@ -1209,8 +1261,18 @@ function placeInLosersRound(losersRound, preferredMatch, teamId, source) {
 }
 
 // Helper: compute matches in a losers round
+// Losers bracket structure follows this pattern (for N teams):
+// - Even rounds (L0, L2, L4, ...): First teams from W0 losers, then consolidation
+// - Odd rounds (L1, L3, L5, ...): Winners bracket losers join from W1, W2, etc.
+// Match counts:
+// - 4 teams:  L0=1, L1=1
+// - 8 teams:  L0=2, L1=2, L2=1, L3=1
+// - 16 teams: L0=4, L1=4, L2=2, L3=2, L4=1, L5=1
+// - 32 teams: L0=8, L1=8, L2=4, L3=4, L4=2, L5=2, L6=1, L7=1
 function getLosersMatchesCount(roundNum, numTeams) {
+    // Initial matches in L0 = numTeams / 4 (pairs of W0 losers)
     const initialMatches = Math.max(1, numTeams / 4);
+    // Match count halves every 2 rounds (L0=L1, L2=L3 with half, L4=L5 with quarter, etc.)
     const matches = Math.max(1, Math.floor(initialMatches / Math.pow(2, Math.floor(roundNum / 2))));
     return matches;
 }

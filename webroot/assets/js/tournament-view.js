@@ -176,9 +176,13 @@ function createLosersRound(roundNum, numTeams) {
     roundDiv.appendChild(title);
     
     // Calculate matches
-    const initialMatches = numTeams / 4;
+    // For 4 teams: L0(1), L1(1)
+    // For 8 teams: L0(2), L1(2), L2(1), L3(1)
+    // For 16 teams: L0(4), L1(4), L2(2), L3(2), L4(1), L5(1)
+    // For 32 teams: L0(8), L1(8), L2(4), L3(4), L4(2), L5(2), L6(1), L7(1)
+    const initialMatches = Math.max(1, numTeams / 4);
     const halvingFactor = Math.floor(roundNum / 2);
-    const matchesInRound = initialMatches / Math.pow(2, halvingFactor);
+    const matchesInRound = Math.max(1, Math.floor(initialMatches / Math.pow(2, halvingFactor)));
     
     for (let i = 0; i < matchesInRound; i++) {
         const matchKey = `l${roundNum}-${i}`;
@@ -202,6 +206,22 @@ function createGrandFinals() {
     
     const match = createMatchWithKey('final', 'final', 0);
     roundDiv.appendChild(match);
+    
+    // Add reset match info
+    const resetInfo = document.createElement('div');
+    resetInfo.className = 'reset-info text-muted small text-center mt-2';
+    resetInfo.textContent = '(If Losers Bracket winner wins, a reset match is required)';
+    roundDiv.appendChild(resetInfo);
+    
+    // Add reset match title
+    const resetTitle = document.createElement('div');
+    resetTitle.className = 'round-title mt-3';
+    resetTitle.textContent = 'Grand Finals Reset';
+    roundDiv.appendChild(resetTitle);
+    
+    // Add reset match
+    const resetMatch = createMatchWithKey('final-reset', 'final-reset', 0);
+    roundDiv.appendChild(resetMatch);
     
     return roundDiv;
 }

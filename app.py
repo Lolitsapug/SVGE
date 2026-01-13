@@ -3,6 +3,7 @@ from flask_cors import CORS
 import json
 import os
 import secrets
+import glob
 from datetime import datetime, timedelta
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -21,6 +22,10 @@ ADMIN_PASSWORD_HASH = os.environ.get(
 
 # Path to store tournament data
 DATA_FILE = 'tournaments_data.json'
+
+# Backup configuration
+BACKUPS_DIR = 'backups'
+MAX_BACKUPS = 10
 
 def load_tournaments():
     """Load tournaments from JSON file"""
@@ -44,6 +49,80 @@ def get_tournament_by_id(tournament_id):
         if tournament.get('id') == tournament_id:
             return tournament
     return None
+
+# Backup management functions
+def ensure_backups_dir():
+    """Ensure the backups directory exists"""
+    if not os.path.exists(BACKUPS_DIR):
+        os.makedirs(BACKUPS_DIR)
+
+def create_backup():
+    """Create a new backup with timestamp"""
+    ensure_backups_dir()
+    tournaments = load_tournaments()
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    backup_filename = f'tournaments_backup_{timestamp}.json'
+    backup_path = os.path.join(BACKUPS_DIR, backup_filename)
+    
+    with open(backup_path, 'w') as f:
+        json.dump(tournaments, f, indent=2)
+    
+    # Cleanup old backups - keep only the most recent MAX_BACKUPS
+    cleanup_old_backups()
+    
+    return backup_filename
+
+def cleanup_old_backups():
+    """Remove old backups, keeping only the most recent MAX_BACKUPS"""
+    ensure_backups_dir()
+    backup_files = glob.glob(os.path.join(BACKUPS_DIR, 'tournaments_backup_*.json'))
+    
+    # Sort by modification time (newest first)
+    backup_files.sort(key=os.path.getmtime, reverse=True)
+    
+    # Remove old backups beyond MAX_BACKUPS
+    for old_backup in backup_files[MAX_BACKUPS:]:
+        try:
+            os.remove(old_backup)
+        except OSError:
+            pass
+
+def list_backups():
+    """List all available backups"""
+    ensure_backups_dir()
+    backup_files = glob.glob(os.path.join(BACKUPS_DIR, 'tournaments_backup_*.json'))
+    
+    backups = []
+    for backup_path in backup_files:
+        filename = os.path.basename(backup_path)
+        # Extract timestamp from filename
+        try:
+            timestamp_str = filename.replace('tournaments_backup_', '').replace('.json', '')
+            timestamp = datetime.strptime(timestamp_str, '%Y-%m-%d_%H-%M-%S')
+            backups.append({
+                'filename': filename,
+                'timestamp': timestamp.isoformat(),
+                'display': timestamp.strftime('%B %d, %Y at %I:%M:%S %p')
+            })
+        except ValueError:
+            continue
+    
+    # Sort by timestamp (newest first)
+    backups.sort(key=lambda x: x['timestamp'], reverse=True)
+    return backups
+
+def load_backup(filename):
+    """Load data from a specific backup file"""
+    backup_path = os.path.join(BACKUPS_DIR, filename)
+    if not os.path.exists(backup_path):
+        return None
+    
+    # Security check - ensure filename is valid
+    if '..' in filename or '/' in filename or '\\' in filename:
+        return None
+    
+    with open(backup_path, 'r') as f:
+        return json.load(f)
 
 # Serve the main HTML files
 @app.route('/')
@@ -244,6 +323,82 @@ def init_example_tournament():
     save_tournaments(tournaments)
     
     return jsonify({'message': 'Example tournament created', 'tournament': example_tournament}), 201
+
+# Backup API Routes
+
+@app.route('/api/backups', methods=['GET'])
+def get_backups():
+    """Get list of all available backups"""
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+    
+    backups = list_backups()
+    return jsonify(backups)
+
+@app.route('/api/backups', methods=['POST'])
+def create_backup_endpoint():
+    """Create a new backup of current tournament data"""
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+    
+    try:
+        backup_filename = create_backup()
+        return jsonify({
+            'success': True,
+            'message': 'Backup created successfully',
+            'filename': backup_filename
+        }), 201
+    except Exception as e:
+        return jsonify({'error': f'Failed to create backup: {str(e)}'}), 500
+
+@app.route('/api/backups/<filename>', methods=['GET'])
+def get_backup_data(filename):
+    """Get the data from a specific backup"""
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+    
+    # Validate filename format
+    if not filename.startswith('tournaments_backup_') or not filename.endswith('.json'):
+        return jsonify({'error': 'Invalid backup filename'}), 400
+    
+    backup_data = load_backup(filename)
+    if backup_data is None:
+        return jsonify({'error': 'Backup not found'}), 404
+    
+    return jsonify(backup_data)
+
+@app.route('/api/backups/<filename>/restore', methods=['POST'])
+def restore_backup(filename):
+    """Restore tournament data from a specific backup"""
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+    
+    # Validate filename format
+    if not filename.startswith('tournaments_backup_') or not filename.endswith('.json'):
+        return jsonify({'error': 'Invalid backup filename'}), 400
+    
+    backup_data = load_backup(filename)
+    if backup_data is None:
+        return jsonify({'error': 'Backup not found'}), 404
+    
+    try:
+        # Create a backup of current data before restoring
+        create_backup()
+        
+        # Restore the backup data
+        save_tournaments(backup_data)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Backup restored successfully',
+            'tournaments_count': len(backup_data)
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to restore backup: {str(e)}'}), 500
 
 if __name__ == '__main__':
     # Initialize example tournament if data file doesn't exist

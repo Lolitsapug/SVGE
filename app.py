@@ -386,8 +386,12 @@ def restore_backup(filename):
         return jsonify({'error': 'Backup not found'}), 404
     
     try:
-        # Create a backup of current data before restoring
-        create_backup()
+        # Check if we should backup current data first
+        data = request.json or {}
+        should_backup = data.get('backupFirst', True)
+        
+        if should_backup:
+            create_backup()
         
         # Restore the backup data
         save_tournaments(backup_data)
@@ -399,6 +403,34 @@ def restore_backup(filename):
         })
     except Exception as e:
         return jsonify({'error': f'Failed to restore backup: {str(e)}'}), 500
+
+@app.route('/api/backups/<filename>', methods=['DELETE'])
+def delete_backup(filename):
+    """Delete a specific backup"""
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+    
+    # Validate filename format
+    if not filename.startswith('tournaments_backup_') or not filename.endswith('.json'):
+        return jsonify({'error': 'Invalid backup filename'}), 400
+    
+    # Security check
+    if '..' in filename or '/' in filename or '\\' in filename:
+        return jsonify({'error': 'Invalid backup filename'}), 400
+    
+    backup_path = os.path.join(BACKUPS_DIR, filename)
+    if not os.path.exists(backup_path):
+        return jsonify({'error': 'Backup not found'}), 404
+    
+    try:
+        os.remove(backup_path)
+        return jsonify({
+            'success': True,
+            'message': 'Backup deleted successfully'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to delete backup: {str(e)}'}), 500
 
 if __name__ == '__main__':
     # Initialize example tournament if data file doesn't exist

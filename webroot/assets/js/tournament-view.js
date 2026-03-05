@@ -207,22 +207,6 @@ function createGrandFinals() {
     const match = createMatchWithKey('final', 'final', 0);
     roundDiv.appendChild(match);
     
-    // Add reset match info
-    const resetInfo = document.createElement('div');
-    resetInfo.className = 'reset-info text-muted small text-center mt-2';
-    resetInfo.textContent = '(If Losers Bracket winner wins, a reset match is required)';
-    roundDiv.appendChild(resetInfo);
-    
-    // Add reset match title
-    const resetTitle = document.createElement('div');
-    resetTitle.className = 'round-title mt-3';
-    resetTitle.textContent = 'Grand Finals Reset';
-    roundDiv.appendChild(resetTitle);
-    
-    // Add reset match
-    const resetMatch = createMatchWithKey('final-reset', 'final-reset', 0);
-    roundDiv.appendChild(resetMatch);
-    
     return roundDiv;
 }
 

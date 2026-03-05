@@ -629,7 +629,7 @@ function createLosersRound(roundNum, numTeams) {
     return roundDiv;
 }
 
-// Create grand finals (includes reset match for true double elimination)
+// Create grand finals
 function createGrandFinals() {
     const roundDiv = document.createElement('div');
     roundDiv.className = 'bracket-round championship mt-4';
@@ -640,25 +640,8 @@ function createGrandFinals() {
     
     roundDiv.appendChild(title);
     
-    // Grand Finals Match 1
     const match = createMatchWithKey('final', 'final', 0, tournamentData.numTeams);
     roundDiv.appendChild(match);
-    
-    // Info about reset match
-    const resetInfo = document.createElement('div');
-    resetInfo.className = 'text-muted small text-center my-2';
-    resetInfo.innerHTML = '<em>If Losers Bracket winner wins ↑, a reset match is required</em>';
-    roundDiv.appendChild(resetInfo);
-    
-    // Grand Finals Reset Match (only played if losers bracket winner wins GF1)
-    const resetTitle = document.createElement('div');
-    resetTitle.className = 'round-title mt-3';
-    resetTitle.style.fontSize = '0.9rem';
-    resetTitle.textContent = 'Reset Match (if needed)';
-    roundDiv.appendChild(resetTitle);
-    
-    const resetMatch = createMatchWithKey('final-reset', 'final-reset', 0, tournamentData.numTeams);
-    roundDiv.appendChild(resetMatch);
     
     return roundDiv;
 }
@@ -926,41 +909,9 @@ function advanceWinner(matchKey, teamId, slot) {
     }
     
     if (matchKey === 'final') {
-        // Grand Finals Match 1
-        const isDoubleElimFinal = tournamentData.bracketType === 'double';
-        
-        if (isDoubleElimFinal) {
-            // In double elim: team1 = winners bracket winner, team2 = losers bracket winner
-            // If team2 (losers bracket) wins, need a reset match
-            if (teamId === matchData.team2) {
-                // Losers bracket winner won GF1 - set up reset match
-                if (!tournamentData.matches['final-reset']) {
-                    tournamentData.matches['final-reset'] = {};
-                }
-                tournamentData.matches['final-reset'].team1 = matchData.team1; // Former winners bracket winner
-                tournamentData.matches['final-reset'].team2 = matchData.team2; // Losers bracket winner
-                
-                generateBracket();
-                showSaveIndicator('Reset match required! Both players now have 1 loss.', 'warning');
-                return;
-            } else {
-                // Winners bracket winner won - they are the champion (opponent has 2 losses)
-                generateBracket();
-                showSaveIndicator('Champion determined!', 'success');
-                return;
-            }
-        } else {
-            // Single elimination - just crown the winner
-            generateBracket();
-            showSaveIndicator('Champion determined!', 'success');
-            return;
-        }
-    }
-    
-    if (matchKey === 'final-reset') {
-        // Reset match - winner is the true champion
+        // Grand Finals - winner is the champion
         generateBracket();
-        showSaveIndicator('TRUE CHAMPION determined!', 'success');
+        showSaveIndicator('Champion determined!', 'success');
         return;
     }
     

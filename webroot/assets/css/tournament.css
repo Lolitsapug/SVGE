@@ -1,0 +1,258 @@
+/* Tournament Page Styles */
+
+body {
+    padding-top: 70px;
+}
+
+.tournament-header {
+    background: linear-gradient(135deg, #6e2b31 0%, #4a1f24 100%);
+    padding: 80px 0 60px;
+    margin-top: -70px;
+    padding-top: 150px;
+}
+
+.tournament-controls {
+    border-bottom: 3px solid #6e2b31;
+}
+
+.bracket-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 40px;
+    overflow-x: auto;
+    padding: 20px;
+    min-height: 500px;
+}
+
+.bracket-round {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    min-width: 250px;
+}
+
+.round-title {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #6e2b31;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.match {
+    background: white;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    margin: 15px 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.match:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border-color: #6e2b31;
+}
+
+.team {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+}
+
+.team:last-child {
+    border-bottom: none;
+}
+
+.team:hover {
+    background-color: #f8f9fa;
+}
+
+.team.winner {
+    background-color: #d4edda;
+    font-weight: bold;
+}
+
+.team.loser {
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
+.team-name {
+    flex: 1;
+    font-size: 1rem;
+    color: #2a2a2a;
+}
+
+.team-name.empty {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+.team-score {
+    font-weight: bold;
+    color: #6e2b31;
+    margin-left: 10px;
+    min-width: 30px;
+    text-align: center;
+}
+
+.advance-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-left: 10px;
+    transition: background-color 0.2s;
+}
+
+.advance-btn:hover {
+    background-color: #218838;
+}
+
+.team.winner .advance-btn {
+    display: none;
+}
+
+.edit-team-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #6e2b31;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.team:hover .edit-team-btn {
+    opacity: 1;
+}
+
+.edit-team-btn:hover {
+    background: #4a1f24;
+}
+
+/* Championship styling */
+.bracket-round.championship {
+    min-width: 300px;
+}
+
+.bracket-round.championship .match {
+    border: 3px solid #b89551;
+    background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+}
+
+.bracket-round.championship .round-title {
+    color: #b89551;
+    font-size: 1.5rem;
+}
+
+/* Modal Styling */
+.discord-tag {
+    background: #5865F2;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.team-info-display {
+    padding: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .bracket-container {
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .bracket-round {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .match {
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .tournament-header {
+        padding: 60px 0 40px;
+        padding-top: 100px;
+    }
+
+    .round-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* Connection Lines (optional enhancement) */
+.bracket-round {
+    position: relative;
+}
+
+/* Social buttons in footer */
+footer .social-buttons a {
+    background: rgba(255, 255, 255, 0.1);
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+footer .social-buttons a:hover {
+    background: #6e2b31;
+}
+
+footer .social-buttons i {
+    color: white;
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    padding: 50px;
+    color: #6c757d;
+}
+
+.loading::after {
+    content: '...';
+    animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% {
+        content: '.';
+    }
+    40% {
+        content: '..';
+    }
+    60%, 100% {
+        content: '...';
+    }
+}

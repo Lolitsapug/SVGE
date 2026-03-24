@@ -78,26 +78,6 @@
 			</div>
 			
 			<div class="row g-4" id="tournamentCardsContainer">
-				<!-- Tournaments will be dynamically loaded here -->
-				
-				<!-- Example Tournament - Remove after creating your own -->
-				<div class="col-md-6 col-lg-4">
-					<a href="tournament.html?id=example-tournament" class="tournament-card-link">
-						<div class="tournament-card">
-							<div class="tournament-image-container">
-								<img src="assets/img/bracket.png" alt="Example Tournament" class="tournament-image">
-							</div>
-							<div class="tournament-info">
-								<h4 class="tournament-title">Example Tournament</h4>
-								<div class="tournament-meta">
-									<span class="tournament-status status-ongoing">Ongoing</span>
-									<span class="tournament-date"><i class="fa fa-calendar"></i> Nov 9 - Nov 16, 2025</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</div>
-
 			</div>
 		</div>
 	</section>
@@ -152,79 +132,83 @@
 
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
-	<script src="assets/js/api-helper.js"></script>
 	<script>
+
+		// ============================================================
+		// STATIC TOURNAMENTS LIST — ADD YOUR TOURNAMENTS HERE
+		// ============================================================
+		// Each entry needs:
+		//   url:    path to the static tournament HTML file
+		//   title:  display name shown on the card
+		//   date:   date string shown on the card
+		//   status: "ongoing", "upcoming", or "completed"
+		//   image:  path to a banner/thumbnail image for the card
+		// ============================================================
+		const STATIC_TOURNAMENTS = [
+			{
+				url:    "tournament-static1.html",
+				title:  "SVGE Mini Tournament",
+				date:   "Nov 9 - Nov 9, 2025",
+				status: "completed",
+				image:  "assets/img/bracket.png"
+			}
+			// Add more tournaments below, e.g.:
+			// {
+			//     url:    "tournament-cs2-2026.html",
+			//     title:  "CS2 Spring 2026",
+			//     date:   "Mar 1 - Mar 15, 2026",
+			//     status: "ongoing",
+			//     image:  "assets/img/CS2-banner.png"
+			// }
+		];
+		// ============================================================
+
+		document.addEventListener('DOMContentLoaded', function () {
+			const container = document.getElementById('tournamentCardsContainer');
+			container.innerHTML = '';
+
+			if (STATIC_TOURNAMENTS.length === 0) {
+				container.innerHTML = '<div class="col-12"><p class="text-muted text-center">No tournaments yet. Check back soon!</p></div>';
+				return;
+			}
+
+			STATIC_TOURNAMENTS.forEach(t => {
+				const statusClass = `status-${t.status}`;
+				const statusText = t.status.charAt(0).toUpperCase() + t.status.slice(1);
+				const col = document.createElement('div');
+				col.className = 'col-md-6 col-lg-4';
+				col.innerHTML = `
+					<a href="${t.url}" class="tournament-card-link">
+						<div class="tournament-card">
+							<div class="tournament-image-container">
+								<img src="${t.image || 'assets/img/bracket.png'}" alt="${t.title}" class="tournament-image">
+							</div>
+							<div class="tournament-info">
+								<h4 class="tournament-title">${t.title}</h4>
+								<div class="tournament-meta">
+									<span class="tournament-status ${statusClass}">${statusText}</span>
+									<span class="tournament-date"><i class="fa fa-calendar"></i> ${t.date}</span>
+								</div>
+							</div>
+						</div>
+					</a>
+				`;
+				container.appendChild(col);
+			});
+		});
+
 		// Hide/show navbar on scroll
 		let lastScrollTop = 0;
 		const navbar = document.getElementById('mainNavbar');
-		
-		window.addEventListener('scroll', function() {
+		window.addEventListener('scroll', function () {
 			let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-			
 			if (scrollTop > lastScrollTop && scrollTop > 100) {
-				// Scrolling down
 				navbar.classList.add('navbar-hidden');
 			} else {
-				// Scrolling up
 				navbar.classList.remove('navbar-hidden');
 			}
-			
 			lastScrollTop = scrollTop;
 		});
-
-	// Load tournaments dynamically
-	document.addEventListener('DOMContentLoaded', async function() {
-		await loadTournaments();
-	});		async function loadTournaments() {
-			const container = document.getElementById('tournamentCardsContainer');
-			
-			try {
-				const tournaments = await TournamentAPI.getAllTournaments();
-				
-				if (tournaments.length === 0) {
-					// Keep the example tournament HTML
-					return;
-				}
-				
-				// Clear container and add all tournaments
-				container.innerHTML = '';
-				
-				tournaments.forEach(tournament => {
-					const card = createTournamentCard(tournament);
-					container.appendChild(card);
-				});
-			} catch (e) {
-				console.error('Error loading tournaments:', e);
-				container.innerHTML = '<div class="col-12"><div class="alert alert-danger">Error loading tournaments. Please make sure the server is running.</div></div>';
-			}
-		}
-
-		function createTournamentCard(tournament) {
-			const col = document.createElement('div');
-			col.className = 'col-md-6 col-lg-4';
-			
-			const statusClass = `status-${tournament.status || 'ongoing'}`;
-			const statusText = (tournament.status || 'ongoing').charAt(0).toUpperCase() + (tournament.status || 'ongoing').slice(1);
-			
-			col.innerHTML = `
-				<a href="tournament.html?id=${tournament.id}" class="tournament-card-link">
-					<div class="tournament-card">
-						<div class="tournament-image-container">
-							<img src="${tournament.image || 'assets/img/bracket.png'}" alt="${tournament.title}" class="tournament-image">
-						</div>
-						<div class="tournament-info">
-							<h4 class="tournament-title">${tournament.title}</h4>
-							<div class="tournament-meta">
-								<span class="tournament-status ${statusClass}">${statusText}</span>
-								<span class="tournament-date"><i class="fa fa-calendar"></i> ${tournament.date || 'TBA'}</span>
-							</div>
-						</div>
-					</div>
-				</a>
-			`;
-			
-			return col;
-		}
 	</script>
 </body>
 

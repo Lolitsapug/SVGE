@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html data-bs-theme="light">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>Tournament - SVGE</title>
+	<link rel="icon" type="image/svg+xml" href="assets/img/SVGE_LOGO_NO_TEXT.svg">
+	<link rel="icon" type="image/png" href="assets/img/SVGE_LOGO_NO_TEXT.png">
+	<link rel="shortcut icon" href="assets/img/SVGE_LOGO_NO_TEXT.svg">
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+	<link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+	<link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+	<link rel="stylesheet" href="assets/css/styles.min.css?v2.2">
+	<link rel="stylesheet" href="assets/css/tournament.css">
+</head>
+
+<body id="page-top">
+
+	<!-- ============================================================
+	     TOURNAMENT DATA — EDIT THIS SECTION TO UPDATE THE TOURNAMENT
+	     ============================================================
+
+	BRACKET TYPES:
+	  bracketType: 'single'   — single elimination
+	  bracketType: 'double'   — double elimination
+
+	TEAM COUNT:
+	  numTeams: 4, 8, or 16
+
+	TEAMS ARRAY:
+	  Each team needs: id (integer, 0-based), name, captain, gameId
+	  Set eliminated: true if they are out of the tournament.
+
+	MATCHES OBJECT (single elimination / winners bracket):
+	  Keys are "round-matchIndex" e.g. "0-0" = Round 1, Match 1
+	  team1/team2: team id number (matches the id in teams array)
+	  winner: team id of the winner (or null if not played yet)
+	  score1/score2: scores (or null if not played)
+
+	  Round numbering:
+	    4  teams:  round 0 = QF,  round 1 = Final
+	    8  teams:  round 0 = R1,  round 1 = QF,  round 2 = Final
+	    16 teams:  round 0 = R1,  round 1 = R2,  round 2 = QF, round 3 = Final
+
+	LOSERS MATCHES OBJECT (double elimination only):
+	  Keys are "l{round}-{matchIndex}" e.g. "l0-0"
+	  Same team1/team2/winner/score format as above.
+
+	GRAND FINAL (double elimination only):
+	  Key is "final" in matches object.
+	  e.g. matches: { ..., "final": { team1: 0, team2: 3, winner: 0, score1: 3, score2: 1 } }
+
+	============================================================ -->
+	<script>
+		const TOURNAMENT = {
+			title:       "SVGE Mini Tournament",
+			description: "Join us for an exciting tournament! Battle it out with other teams to claim victory.",
+			date:        "November 9 - November 9, 2025",
+			bracketType: "single",   // "single" or "double"
+			numTeams:    8,          // 4, 8, or 16
+
+			teams: [
+				{ id: 0, name: "Team Alpha",   captain: "alpha#1234",   gameId: "AlphaGG",   eliminated: false },
+				{ id: 1, name: "Team Beta",    captain: "beta#5678",    gameId: "BetaPlay",  eliminated: true  },
+				{ id: 2, name: "Team Gamma",   captain: "gamma#9012",   gameId: "GammaX",    eliminated: false },
+				{ id: 3, name: "Team Delta",   captain: "delta#3456",   gameId: "DeltaFire", eliminated: true  },
+				{ id: 4, name: "Team Epsilon", captain: "epsilon#7890", gameId: "EpsGamer",  eliminated: false },
+				{ id: 5, name: "Team Zeta",    captain: "zeta#2345",    gameId: "ZetaRush",  eliminated: true  },
+				{ id: 6, name: "Team Eta",     captain: "eta#6789",     gameId: "EtaStrike", eliminated: false },
+				{ id: 7, name: "Team Theta",   captain: "theta#0123",   gameId: "ThetaWin",  eliminated: true  }
+			],
+
+			// Winners bracket / single elim matches
+			matches: {
+				"0-0": { team1: 0, team2: 1, winner: 0, score1: 2, score2: 0 },
+				"0-1": { team1: 2, team2: 3, winner: 2, score1: 2, score2: 1 },
+				"0-2": { team1: 4, team2: 5, winner: 4, score1: 2, score2: 0 },
+				"0-3": { team1: 6, team2: 7, winner: 6, score1: 2, score2: 1 },
+				"1-0": { team1: 0, team2: 2, winner: 0, score1: 2, score2: 0 },
+				"1-1": { team1: 4, team2: 6, winner: null, score1: null, score2: null },
+				"2-0": { team1: 0, team2: null, winner: null, score1: null, score2: null }
+			},
+
+			// Losers bracket matches (only used when bracketType is "double")
+			losersMatches: {
+				"l0-0": { team1: 1, team2: 3, winner: null, score1: null, score2: null },
+				"l0-1": { team1: 5, team2: 7, winner: null, score1: null, score2: null },
+				"l1-0": { team1: null, team2: null, winner: null, score1: null, score2: null },
+				"l1-1": { team1: null, team2: null, winner: null, score1: null, score2: null },
+				"l2-0": { team1: null, team2: null, winner: null, score1: null, score2: null }
+			}
+		};
+	</script>
+	<!-- ============================================================
+	     END OF TOURNAMENT DATA
+	     ============================================================ -->
+
+	<!-- Navigation Bar -->
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar" style="background-color: #6E2B31; padding: 10px 0;">
+		<div class="container">
+			<a class="navbar-brand" href="index.html">
+				<img src="assets/img/SVGE_LOGO_NO_TEXT.svg" style="height: 40px; margin-right: 10px;">
+				SVGE
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="index.html">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="tournaments.html">Tournaments</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Tournament Header -->
+	<header class="tournament-header">
+		<div class="container text-center">
+			<h1 class="display-4 text-white mb-3" id="tournamentTitle"></h1>
+			<div class="tournament-details mt-4">
+				<p class="tournament-description" id="tournamentDescription"></p>
+				<p class="tournament-date-display">
+					<i class="fa fa-calendar"></i> <span id="tournamentDate"></span>
+				</p>
+			</div>
+		</div>
+	</header>
+
+	<!-- Tournament Info Section -->
+	<section class="tournament-info-section py-4 bg-light">
+		<div class="container text-center">
+			<h3>Tournament Bracket</h3>
+			<p class="text-muted">Click on team names to view captain information</p>
+		</div>
+	</section>
+
+	<!-- Tournament Bracket -->
+	<section class="tournament-bracket py-5" style="background-color: #F8F9FA;">
+		<div class="container-fluid">
+			<div id="bracketContainer" class="bracket-container">
+			</div>
+		</div>
+	</section>
+
+	<!-- Sponsors/Partners -->
+	<section class="py-5">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-md-3"><a href="#"><img class="img-fluid d-block mx-auto"
+							src="assets/img/clients/NSE_notext_LARGE.png" style="height: 75px;"></a></div>
+				<div class="col-sm-6 col-md-3"><a href="#"><img class="img-fluid d-block mx-auto"
+							src="assets/img/clients/1616173794304_NUEL_FULL_COLOUR_VERTICAL@800.png" style="height: 75px;"></a></div>
+				<div class="col-sm-6 col-md-3"><a href="#"><img class="img-fluid d-block mx-auto"
+							src="assets/img/clients/SUSU_University_of_Southampton_Students%27_Union_logo_2020.png"
+							style="height: 75px;"></a></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4"><span class="copyright">Designed By Rudra Mutalik, David Deng</span></div>
+				<div class="col-md-4">
+					<ul class="list-inline social-buttons">
+						<li class="list-inline-item"><a href="https://twitter.com/UoSVGE"><i class="fa fa-twitter"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.facebook.com/groups/586562508157171/"><i class="fa fa-facebook"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.instagram.com/uosvge/"><i class="fa fa-instagram"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.twitch.tv/uosvge"><i class="fa fa-twitch"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.youtube.com/channel/UCiLgPdg1SmBA7mdVzq-FaWw"><i class="fa fa-youtube"></i></a></li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<ul class="list-inline quicklinks">
+						<li class="list-inline-item"><a href="https://drive.google.com/file/d/1Mal9B43T7udX_nkvOQ9RG4lmYUU2J4v3/view?usp=sharing">Constitution</a></li>
+						<li class="list-inline-item"><a href="https://drive.google.com/file/d/1-aBfNCNPlMcLBzbeBUTP5WEzGjLOGrnX/view?usp=sharing">Sportsmanship and Conduct Policy</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<!-- Team Info Modal -->
+	<div class="modal fade" id="teamInfoModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="teamInfoTitle">Team Information</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<div class="team-info-display">
+						<p><strong>Captain's Discord:</strong></p>
+						<p class="discord-tag" id="teamInfoDiscord">Not set</p>
+						<p class="mt-3"><strong>Captain's Game ID:</strong></p>
+						<p class="game-id" id="teamInfoGameId">Not set</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+	<script>
+		let teamInfoModal;
+
+		document.addEventListener('DOMContentLoaded', function () {
+			teamInfoModal = new bootstrap.Modal(document.getElementById('teamInfoModal'));
+
+			// Fill header info
+			document.getElementById('tournamentTitle').textContent = TOURNAMENT.title;
+			document.getElementById('tournamentDescription').textContent = TOURNAMENT.description;
+			document.getElementById('tournamentDate').textContent = TOURNAMENT.date;
+
+			generateBracket();
+		});
+
+		function generateBracket() {
+			const numTeams = TOURNAMENT.numTeams;
+			const container = document.getElementById('bracketContainer');
+			container.innerHTML = '';
+
+			if (TOURNAMENT.bracketType === 'double') {
+				const mainContainer = document.createElement('div');
+				mainContainer.className = 'd-flex gap-4';
+
+				const bracketsColumn = document.createElement('div');
+				bracketsColumn.className = 'd-flex flex-column gap-4 flex-grow-1';
+
+				// Winners bracket
+				const winnersContainer = document.createElement('div');
+				winnersContainer.innerHTML = '<h4 class="text-center mb-3">Winners Bracket</h4>';
+				const winnersBracket = document.createElement('div');
+				winnersBracket.className = 'd-flex gap-3';
+				const rounds = Math.log2(numTeams);
+				for (let r = 0; r < rounds; r++) {
+					winnersBracket.appendChild(createRound(r, rounds, numTeams, 'winners'));
+				}
+				winnersContainer.appendChild(winnersBracket);
+				bracketsColumn.appendChild(winnersContainer);
+
+				// Losers bracket
+				const losersContainer = document.createElement('div');
+				losersContainer.innerHTML = '<h4 class="text-center mb-3">Losers Bracket</h4>';
+				const losersBracket = document.createElement('div');
+				losersBracket.className = 'd-flex gap-3';
+				const losersRounds = (rounds - 1) * 2;
+				for (let r = 0; r < losersRounds; r++) {
+					losersBracket.appendChild(createLosersRound(r, numTeams));
+				}
+				losersContainer.appendChild(losersBracket);
+				bracketsColumn.appendChild(losersContainer);
+
+				mainContainer.appendChild(bracketsColumn);
+				mainContainer.appendChild(createGrandFinals());
+				container.appendChild(mainContainer);
+			} else {
+				const rounds = Math.log2(numTeams);
+				for (let r = 0; r < rounds; r++) {
+					container.appendChild(createRound(r, rounds, numTeams, 'single'));
+				}
+			}
+		}
+
+		function createRound(roundNum, totalRounds, numTeams, bracketType) {
+			const roundDiv = document.createElement('div');
+			roundDiv.className = 'bracket-round';
+			roundDiv.setAttribute('data-round', roundNum);
+
+			const title = document.createElement('div');
+			title.className = 'round-title';
+			if (roundNum === 0) {
+				title.textContent = 'Round 1';
+			} else if (roundNum === totalRounds - 1) {
+				title.textContent = bracketType === 'winners' ? 'Upper Finals' : 'Finals';
+				if (bracketType !== 'winners') roundDiv.className = 'bracket-round championship';
+			} else {
+				title.textContent = `Round ${roundNum + 1}`;
+			}
+			roundDiv.appendChild(title);
+
+			const matchesInRound = numTeams / Math.pow(2, roundNum + 1);
+			for (let i = 0; i < matchesInRound; i++) {
+				const key = bracketType === 'winners' ? `w${roundNum}-${i}` : `${roundNum}-${i}`;
+				roundDiv.appendChild(createMatchCard(key, roundNum, i, false));
+			}
+			return roundDiv;
+		}
+
+		function createLosersRound(roundNum, numTeams) {
+			const roundDiv = document.createElement('div');
+			roundDiv.className = 'bracket-round';
+			roundDiv.setAttribute('data-losers-round', roundNum);
+
+			const title = document.createElement('div');
+			title.className = 'round-title';
+			const winnersRounds = Math.log2(numTeams);
+			const totalLosersRounds = (winnersRounds - 1) * 2;
+			title.textContent = roundNum === totalLosersRounds - 1 ? 'Losers Final' : `Losers ${roundNum + 1}`;
+			roundDiv.appendChild(title);
+
+			const initialMatches = Math.max(1, numTeams / 4);
+			const halvingFactor = Math.floor(roundNum / 2);
+			const matchesInRound = Math.max(1, Math.floor(initialMatches / Math.pow(2, halvingFactor)));
+
+			for (let i = 0; i < matchesInRound; i++) {
+				roundDiv.appendChild(createMatchCard(`l${roundNum}-${i}`, roundNum, i, true));
+			}
+			return roundDiv;
+		}
+
+		function createGrandFinals() {
+			const roundDiv = document.createElement('div');
+			roundDiv.className = 'bracket-round championship mt-4';
+			const title = document.createElement('div');
+			title.className = 'round-title';
+			title.textContent = 'Grand Finals';
+			roundDiv.appendChild(title);
+			roundDiv.appendChild(createMatchCard('final', 'final', 0, false));
+			return roundDiv;
+		}
+
+		function createMatchCard(matchKey, roundNum, matchNum, isLosers) {
+			const matchDiv = document.createElement('div');
+			matchDiv.className = 'match';
+			matchDiv.setAttribute('data-round', roundNum);
+			matchDiv.setAttribute('data-match', matchNum);
+
+			const source = isLosers ? TOURNAMENT.losersMatches : TOURNAMENT.matches;
+			const matchData = source && source[matchKey];
+
+			const team1Div = createTeamSlot(matchData ? matchData.team1 : null);
+			const team2Div = createTeamSlot(matchData ? matchData.team2 : null);
+			matchDiv.appendChild(team1Div);
+			matchDiv.appendChild(team2Div);
+
+			if (matchData) {
+				if (matchData.winner !== null && matchData.winner !== undefined) {
+					markWinner(matchDiv, matchData.winner);
+				}
+				if (matchData.score1 !== null && matchData.score1 !== undefined &&
+					matchData.score2 !== null && matchData.score2 !== undefined) {
+					const scoresDiv = document.createElement('div');
+					scoresDiv.className = 'match-scores';
+					scoresDiv.innerHTML = `<span class="score">${matchData.score1} - ${matchData.score2}</span>`;
+					matchDiv.appendChild(scoresDiv);
+				}
+			}
+
+			return matchDiv;
+		}
+
+		function createTeamSlot(teamId) {
+			const teamDiv = document.createElement('div');
+			teamDiv.className = 'team';
+
+			const team = teamId !== null && teamId !== undefined
+				? TOURNAMENT.teams.find(t => t.id === teamId)
+				: null;
+
+			if (team) {
+				teamDiv.textContent = team.name;
+				teamDiv.setAttribute('data-team-id', team.id);
+				if (team.eliminated) teamDiv.classList.add('eliminated');
+				teamDiv.style.cursor = 'pointer';
+				teamDiv.onclick = () => showTeamInfo(team.id);
+			} else {
+				teamDiv.textContent = 'TBD';
+				teamDiv.classList.add('empty');
+			}
+
+			return teamDiv;
+		}
+
+		function markWinner(matchDiv, winnerTeamId) {
+			matchDiv.querySelectorAll('.team').forEach(team => {
+				const id = parseInt(team.getAttribute('data-team-id'));
+				if (id === winnerTeamId) {
+					team.classList.add('winner');
+				} else if (!isNaN(id)) {
+					team.classList.add('eliminated');
+				}
+			});
+		}
+
+		function showTeamInfo(teamId) {
+			const team = TOURNAMENT.teams.find(t => t.id === teamId);
+			if (!team) return;
+
+			document.getElementById('teamInfoTitle').textContent = team.name;
+
+			const discordEl = document.getElementById('teamInfoDiscord');
+			discordEl.textContent = team.captain && team.captain.trim() ? team.captain : 'Not set';
+			discordEl.style.cssText = `background:${team.captain ? '#5865F2' : '#6c757d'};color:white;padding:8px 12px;border-radius:5px;display:inline-block`;
+
+			const gameIdEl = document.getElementById('teamInfoGameId');
+			gameIdEl.textContent = team.gameId && team.gameId.trim() ? team.gameId : 'Not set';
+			gameIdEl.style.cssText = `background:${team.gameId ? '#28a745' : '#6c757d'};color:white;padding:8px 12px;border-radius:5px;display:inline-block`;
+
+			teamInfoModal.show();
+		}
+
+		// Hide/show navbar on scroll
+		let lastScrollTop = 0;
+		const navbar = document.getElementById('mainNavbar');
+		window.addEventListener('scroll', function () {
+			let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+			if (scrollTop > lastScrollTop && scrollTop > 100) {
+				navbar.classList.add('navbar-hidden');
+			} else {
+				navbar.classList.remove('navbar-hidden');
+			}
+			lastScrollTop = scrollTop;
+		});
+	</script>
+</body>
+
+</html>

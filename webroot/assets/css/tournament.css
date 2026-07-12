@@ -4,15 +4,116 @@ body {
     padding-top: 70px;
 }
 
+/* Navbar Styles for both pages */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease, transform 0.3s ease;
+}
+
+.navbar.navbar-hidden {
+    transform: translateY(-100%);
+}
+
+/* Remove top padding for main page */
+body#page-top {
+    padding-top: 0 !important;
+}
+
+/* Main page header starts at top */
+body#page-top .masthead {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand:hover {
+    opacity: 0.9;
+}
+
+.navbar-nav .nav-link {
+    font-size: 1.1rem;
+    padding: 8px 20px !important;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+}
+
 .tournament-header {
     background: linear-gradient(135deg, #6e2b31 0%, #4a1f24 100%);
     padding: 80px 0 60px;
-    margin-top: -70px;
+    margin-top: 0;
     padding-top: 150px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.tournament-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(110, 43, 49, 0.6); /* 60% red overlay */
+    z-index: 0;
+}
+
+.tournament-header .container {
+    position: relative;
+    z-index: 1;
+}
+
+.tournament-details {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.tournament-description {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.tournament-date-display {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.tournament-date-display i {
+    margin-right: 8px;
+}
+
+.tournament-info-section {
+    border-bottom: 3px solid #6e2b31;
+}
+
+.tournament-info-section h3 {
+    color: #6e2b31;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .tournament-controls {
     border-bottom: 3px solid #6e2b31;
+    background-color: white;
 }
 
 .bracket-container {
@@ -28,8 +129,89 @@ body {
 .bracket-round {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     min-width: 250px;
+    position: relative;
+}
+
+/* Spacing for bracket tree layout */
+.bracket-round .match {
+    position: relative;
+}
+
+/* First round - base spacing */
+.bracket-round[data-round="0"] .match {
+    margin: 10px 0;
+}
+
+/* Second round - double spacing (2 matches → 1) */
+.bracket-round[data-round="1"] .match {
+    margin: 45px 0;
+}
+
+/* Third round - quadruple spacing (4 matches → 1) */
+.bracket-round[data-round="2"] .match {
+    margin: 115px 0;
+}
+
+/* Fourth round - 8x spacing (8 matches → 1) */
+.bracket-round[data-round="3"] .match {
+    margin: 255px 0;
+}
+
+/* Losers bracket spacing - adjust based on round structure */
+/* For 8-team bracket (3 losers rounds) */
+.bracket-round[data-losers-round="0"] .match {
+    margin: 10px 0;
+}
+
+.bracket-round[data-losers-round="1"] .match {
+    margin: 45px 0;
+}
+
+.bracket-round[data-losers-round="2"] .match {
+    margin: 115px 0;
+}
+
+/* For 16-team bracket (6 losers rounds) - special structure */
+/* L0: 4 matches from W0 losers - tight spacing */
+.bracket-round[data-losers-round="0"] .match {
+    margin: 10px 0;
+}
+
+/* L1: 4 matches (L0 winners meet W1 losers) - tight spacing, same count as L0 */
+.bracket-round[data-losers-round="1"] .match {
+    margin: 10px 0;
+}
+
+/* L2: 4 matches (L1 winners only) - tight spacing, same count as L1 */
+.bracket-round[data-losers-round="2"] .match {
+    margin: 10px 0;
+}
+
+/* L3: 2 matches (L2 winners meet W2 losers) - double spacing (4→2) */
+.bracket-round[data-losers-round="3"] .match {
+    margin: 45px 0;
+}
+
+/* L4: 2 matches (L3 winners only) - maintain spacing, same count as L3 */
+.bracket-round[data-losers-round="4"] .match {
+    margin: 45px 0;
+}
+
+/* L5: 1 match (L4 winners meet W3 losers) - quadruple spacing (2→1) */
+.bracket-round[data-losers-round="5"] .match {
+    margin: 115px 0;
+}
+
+/* L6: 1 match (losers finals) - maintain spacing */
+.bracket-round[data-losers-round="6"] .match {
+    margin: 115px 0;
+}
+
+/* For 32-team bracket (8 losers rounds) */
+.bracket-round[data-losers-round="7"] .match {
+    margin: 255px 0;
 }
 
 .round-title {
@@ -56,6 +238,19 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     border-color: #6e2b31;
+}
+
+.match-scores {
+    padding: 8px 20px;
+    background-color: #f8f9fa;
+    text-align: center;
+    border-top: 1px solid #dee2e6;
+}
+
+.match-scores .score {
+    font-weight: bold;
+    font-size: 14px;
+    color: #6e2b31;
 }
 
 .team {
@@ -153,16 +348,25 @@ body {
 /* Championship styling */
 .bracket-round.championship {
     min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .bracket-round.championship .match {
     border: 3px solid #b89551;
     background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+    margin: 0 !important;
 }
 
 .bracket-round.championship .round-title {
     color: #b89551;
     font-size: 1.5rem;
+}
+
+/* Grand Finals in double elimination */
+.bracket-round[data-round="final"] .match {
+    margin: 0 !important;
 }
 
 /* Modal Styling */
@@ -206,31 +410,139 @@ body {
     .round-title {
         font-size: 1.1rem;
     }
+
+    /* Reduce spacing on mobile for better fit */
+    .bracket-round[data-round] .match {
+        margin: 20px 0 !important;
+    }
+
+    .bracket-round[data-losers-round] .match {
+        margin: 20px 0 !important;
+    }
+
+    /* Hide connection lines on mobile */
+    .bracket-round .match::after,
+    .bracket-round .match::before {
+        display: none;
+    }
 }
 
-/* Connection Lines (optional enhancement) */
+/* Connection Lines - shows bracket flow */
 .bracket-round {
     position: relative;
 }
 
-/* Social buttons in footer */
+/* Add connecting lines from matches to next round */
+.bracket-round .match::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: #dee2e6;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-1px);
+    z-index: 0;
+}
+
+/* Remove connection line from championship/final rounds */
+.bracket-round.championship .match::after,
+.bracket-round[data-round="final"] .match::after {
+    display: none;
+}
+
+/* Add vertical lines connecting pairs of matches */
+.bracket-round .match:nth-child(odd):not(:last-child)::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    background: #dee2e6;
+    right: -20px;
+    top: 50%;
+    z-index: 0;
+}
+
+/* Adjust vertical line height based on round for proper bracket tree */
+.bracket-round[data-round="0"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 20px);
+}
+
+.bracket-round[data-round="1"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 90px);
+}
+
+.bracket-round[data-round="2"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 230px);
+}
+
+/* Losers bracket connection lines - adjust for structure */
+/* L0, L1, L2 have same count (4 matches each) - tight connections */
+.bracket-round[data-losers-round="0"] .match:nth-child(odd):not(:last-child)::before,
+.bracket-round[data-losers-round="1"] .match:nth-child(odd):not(:last-child)::before,
+.bracket-round[data-losers-round="2"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 20px);
+}
+
+/* L3, L4 converge from 4→2 matches */
+.bracket-round[data-losers-round="3"] .match:nth-child(odd):not(:last-child)::before,
+.bracket-round[data-losers-round="4"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 90px);
+}
+
+/* L5, L6 converge from 2→1 match */
+.bracket-round[data-losers-round="5"] .match:nth-child(odd):not(:last-child)::before,
+.bracket-round[data-losers-round="6"] .match:nth-child(odd):not(:last-child)::before {
+    height: calc(100% + 230px);
+}
+
+/* Footer Styles */
+footer {
+    background-color: #fff;
+    padding: 40px 0;
+    color: #2a2a2a;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+}
+
+footer .copyright {
+    font-size: 0.9rem;
+    color: #2a2a2a;
+}
+
+footer .social-buttons {
+    margin: 0;
+    padding: 0;
+}
+
 footer .social-buttons a {
-    background: rgba(255, 255, 255, 0.1);
+    background: #ffc107;
     width: 40px;
     height: 40px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background 0.3s;
-}
-
-footer .social-buttons a:hover {
-    background: #6e2b31;
 }
 
 footer .social-buttons i {
     color: white;
+    font-size: 1.2rem;
+}
+
+footer .quicklinks {
+    margin: 0;
+    padding: 0;
+}
+
+footer .quicklinks a {
+    color: #2a2a2a;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+footer .quicklinks a:hover {
+    color: #6e2b31;
 }
 
 /* Loading state */
